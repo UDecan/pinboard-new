@@ -48,6 +48,10 @@ COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 #    fi;
 RUN chown -R www-data:www-data /var/www/vendor/
 
+RUN apk add --update npm
+RUN chown -R www-data:www-data /var/www/node_modules
+RUN chown -R www-data:www-data /var/www/public
+
 EXPOSE 8080
 
 CMD ["/bin/sh", "./docker/php-fpm/run.sh"]

@@ -19,7 +19,12 @@ class MainController extends AbstractController
             'created_at' => date('Y-m-d H:00:00', strtotime('-1 day')),
         ];
 
-        $hostsRegexp = Utils::getUserAccessHostsRegexp($app);
+//        if (!$this->isUserLogged()) {
+            return $this->redirectToRoute('login');
+//        }
+
+//        $hostsRegexp = Utils::getUserAccessHostsRegexp($app);
+        $hostsRegexp = '';
         $hostsWhere = '';
 
         if ($hostsRegexp !== '.*') {
@@ -50,9 +55,10 @@ class MainController extends AbstractController
                 a.server_name
         ";
 
-        $stmt = $app['db']->executeCacheQuery($sql, $params, [], new QueryCacheProfile(60 * 60));
-        $result['servers'] = $stmt->fetchAll();
-        $stmt->closeCursor();
+//        $stmt = $app['db']->executeCacheQuery($sql, $params, [], new QueryCacheProfile(60 * 60));
+//        $result['servers'] = $stmt->fetchAll();
+        $result['servers'] = [];
+//        $stmt->closeCursor();
 
         $idn = new IDNaConvert(['idn_version' => 2008]);
 
