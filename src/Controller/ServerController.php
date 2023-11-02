@@ -109,7 +109,7 @@ class ServerController extends AbstractController
         if (!in_array($serverFilter, ['on', 'off'])) {
             $serverFilter = 'off';
         }
-        $serverFilter = $serverFilter == 'on';
+        $serverFilter = $serverFilter === 'on';
 
         $result = [
             'hosts' => getHosts($app['db'], $serverName),
@@ -346,7 +346,7 @@ class ServerController extends AbstractController
             $result['filter'] = $liveFilter[$serverName];
             $result['show_filter'] = false;
 
-            if (sizeof($result['filter'])) {
+            if (count($result['filter'])) {
                 foreach ($result['filter'] as $item) {
                     if ($item) {
                         $result['show_filter'] = true;
@@ -402,8 +402,8 @@ class ServerController extends AbstractController
             return $app->json($result);
         } else {
             $result['hosts'] = getHosts($app['db'], $serverName);
-            $result['last_id'] = sizeof($result['pages']) ? $result['pages'][0]['id'] : 0;
-            $result['last_timestamp'] = sizeof($result['pages']) ? $result['pages'][0]['timestamp'] : 0;
+            $result['last_id'] = count($result['pages']) ? $result['pages'][0]['id'] : 0;
+            $result['last_timestamp'] = count($result['pages']) ? $result['pages'][0]['timestamp'] : 0;
 
             $response = new Response();
 
@@ -625,7 +625,7 @@ class ServerController extends AbstractController
         $groupBy = 'GROUP BY ' . SqlUtils::getDateGroupExpression($period);
         $hostCondition = '';
 
-        if ($hostName != 'all') {
+        if ($hostName !== 'all') {
             $params['hostname'] = $hostName;
             $hostCondition = 'AND hostname = :hostname';
         }
@@ -695,7 +695,7 @@ class ServerController extends AbstractController
         ];
 
         $hostCondition = 'AND hostname IS NULL';
-        if ($hostName != 'all') {
+        if ($hostName !== 'all') {
             $params['hostname'] = $hostName;
             $hostCondition = 'AND hostname = :hostname';
         }
@@ -709,10 +709,10 @@ class ServerController extends AbstractController
                 SELECT
                     {$aggregation[$valueField]['req_agg']} as {$aggregation[$valueField]['req_field']}, created_at
                 FROM
-                    " . ($hostName != 'all' ? 'ipm_report_by_hostname_and_server' : 'ipm_report_by_server_name') . '
+                    " . ($hostName !== 'all' ? 'ipm_report_by_hostname_and_server' : 'ipm_report_by_server_name') . '
                 WHERE
                     server_name = :server_name
-                    ' . ($hostName != 'all' ? $hostCondition : '') . "
+                    ' . ($hostName !== 'all' ? $hostCondition : '') . "
                     AND created_at > :created_at
                 GROUP BY
                     $timeGroupBy
@@ -862,7 +862,7 @@ class ServerController extends AbstractController
         ];
 
         $hostCondition = '';
-        if ($hostName != 'all') {
+        if ($hostName !== 'all') {
             $params['hostname'] = $hostName;
             $hostCondition = 'AND hostname = :hostname';
         }
@@ -935,7 +935,7 @@ class ServerController extends AbstractController
         ];
 
         $hostCondition = '';
-        if ($hostName != 'all') {
+        if ($hostName !== 'all') {
             $params['hostname'] = $hostName;
             $hostCondition = 'AND hostname = :hostname';
         }
@@ -964,7 +964,7 @@ class ServerController extends AbstractController
         ];
         $hostCondition = '';
 
-        if ($hostName != 'all') {
+        if ($hostName !== 'all') {
             $params['hostname'] = $hostName;
             $hostCondition = 'AND hostname = :hostname';
         }
@@ -1109,7 +1109,7 @@ class ServerController extends AbstractController
         $hostCondition = '';
         $idCondition = '';
 
-        if ($hostName != 'all') {
+        if ($hostName !== 'all') {
             $params['hostname'] = $hostName;
             $hostCondition .= ' AND hostname = :hostname';
         }
@@ -1185,7 +1185,7 @@ class ServerController extends AbstractController
 
             if ('ipm_req_time_details' === $table && 'time' === $colOrder) {
                 $orderBy = "req_time $dir, created_at DESC";
-            } elseif ('ipm_mem_peak_usage_details' == $table && 'mem' == $colOrder) {
+            } elseif ('ipm_mem_peak_usage_details' === $table && 'mem' === $colOrder) {
                 $orderBy = "mem_peak_usage $dir, created_at DESC";
             } elseif ('ipm_cpu_usage_details' === $table && 'cpu' === $colOrder) {
                 $orderBy = "cpu_peak_usage $dir, created_at DESC";

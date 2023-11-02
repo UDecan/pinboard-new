@@ -20,16 +20,13 @@ services:
 
   mysql:
     container_name: mysql
+    command: --default-authentication-plugin=mysql_native_password
     build:
       context: mysql
     ports:
-      - ${MYSQL_PORT}:5432
+      - ${MYSQL_PORT}:3306
     environment:
-      MYSQL_RANDOM_ROOT_PASSWORD: ${MYSQL_RANDOM_ROOT_PASSWORD}
-      MYSQL_ALLOW_EMPTY_PASSWORD: ${MYSQL_ALLOW_EMPTY_PASSWORD}
       MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
-    volumes:
-      - db_data:/var/lib/mysql/data:rw
-
-volumes:
-  db_data:
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}

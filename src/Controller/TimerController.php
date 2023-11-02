@@ -39,7 +39,7 @@ class TimerController extends AbstractController
         }
 
         if (empty($grouping)) {
-            if (sizeof($groupingTags)) {
+            if (count($groupingTags)) {
                 if (in_array('group', $groupingTags)) {
                     $grouping = 'group';
                 } else {
@@ -75,7 +75,7 @@ class TimerController extends AbstractController
 
     function getRequestById($conn, $type, $id, $date = null)
     {
-        if ($type == 'live') {
+        if ($type === 'live') {
             $params = [
                 'id' => $id
             ];
@@ -106,7 +106,7 @@ class TimerController extends AbstractController
 
         $data = $conn->fetchAll($sql, $params);
 
-        if (sizeof($data)) {
+        if (count($data)) {
             return $data[0];
         }
 
@@ -115,7 +115,7 @@ class TimerController extends AbstractController
 
     function getTimers($conn, $type, $id, $date = null)
     {
-        if ($type == 'live') {
+        if ($type === 'live') {
             $params = [
                 'id' => $id
             ];
@@ -151,7 +151,7 @@ class TimerController extends AbstractController
 
         $data = $conn->fetchAll($sql, $params);
 
-        if (!sizeof($data)) {
+        if (!count($data)) {
             return [];
         }
 
@@ -179,7 +179,7 @@ class TimerController extends AbstractController
     // Search tags which exist in all timers
     function findGroupingTags($timers)
     {
-        if (!sizeof($timers)) {
+        if (!count($timers)) {
             return [];
         }
 
@@ -197,7 +197,7 @@ class TimerController extends AbstractController
         //if group is defined then remove category
         if (in_array('group', $tags)) {
             foreach ($tags as $index => $tag) {
-                if ($tag == 'category') {
+                if ($tag === 'category') {
                     unset($tags[$index]);
                 }
             }
@@ -232,7 +232,7 @@ class TimerController extends AbstractController
 
             unset($timer['tags'][$groupingTag]);
 
-            if ($groupingTag == 'group' && isset($timer['tags']['category'])) {
+            if ($groupingTag === 'group' && isset($timer['tags']['category'])) {
                 unset($timer['tags']['category']);
             }
 

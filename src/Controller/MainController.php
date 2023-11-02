@@ -22,7 +22,7 @@ class MainController extends AbstractController
         $hostsRegexp = Utils::getUserAccessHostsRegexp($app);
         $hostsWhere = '';
 
-        if ($hostsRegexp != '.*') {
+        if ($hostsRegexp !== '.*') {
             $hostsRegexp = is_array($hostsRegexp) ? $hostsRegexp : [$hostsRegexp];
             $hostsWhere = " AND (a.server_name REGEXP '" . implode("' OR a.server_name REGEXP '", $hostsRegexp) . "')";
         }

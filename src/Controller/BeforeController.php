@@ -61,8 +61,8 @@ class BeforeController extends AbstractController
                 $ips[$data['server_name']] = $data;
             } else {
                 $domainParts = explode('.', $data['server_name']);
-                if (sizeof($domainParts) > 1) {
-                    $baseDomain = $domainParts[sizeof($domainParts) - 2] . '.' . $domainParts[sizeof($domainParts) - 1];
+                if (count($domainParts) > 1) {
+                    $baseDomain = $domainParts[count($domainParts) - 2] . '.' . $domainParts[count($domainParts) - 1];
                 } else {
                     $baseDomain = $data['server_name'];
                 }
@@ -71,7 +71,7 @@ class BeforeController extends AbstractController
         }
 
         ksort($result['servers']);
-        if (sizeof($ips)) {
+        if (count($ips)) {
             $result['servers']['IPs'] = $ips;
         }
 

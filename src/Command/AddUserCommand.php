@@ -53,7 +53,7 @@ class AddUserCommand extends Command
             $hosts = '.*';
 
             preg_match("/$hosts/", "my test string for regexp");
-            if (preg_last_error() != PREG_NO_ERROR) {
+            if (preg_last_error() !== PREG_NO_ERROR) {
                 $output->writeln("<error>Wrong regular expression! Code " . preg_last_error() . "</error>");
                 return;
             }
@@ -71,7 +71,7 @@ class AddUserCommand extends Command
         $newYaml = [];
         //copy other sections
         foreach ($yaml as $key => $section) {
-            if ($key != 'secure') {
+            if ($key !== 'secure') {
                 $newYaml[$key] = $section;
             }
         }

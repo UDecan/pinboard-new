@@ -35,7 +35,7 @@ class Utils
                 }
             }
 
-            if (!sizeof($hostsRegExp)) {
+            if (!count($hostsRegExp)) {
                 return '.*';
             }
         }
@@ -68,7 +68,7 @@ class Utils
     public static function parseRequestTags(array $request, $tagsFilter = null): array|bool
     {
         //request tags matches the tags' filter
-        if (sizeof($tagsFilter)) {
+        if (count($tagsFilter)) {
             if (!$request['tags_cnt']) {
                 return false;
             }
@@ -87,9 +87,9 @@ class Utils
             foreach ($r as $k) {
                 $k = explode('=', $k);
 
-                if (sizeof($k) > 1) {
+                if (count($k) > 1) {
                     $request['tags'][trim($k[0])] = trim($k[1]);
-                } elseif (sizeof($k) === 1) {
+                } elseif (count($k) === 1) {
                     $request['tags'][trim($k[0])] = null;
                 }
             }

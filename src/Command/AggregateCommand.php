@@ -214,7 +214,7 @@ class AggregateCommand extends Command
                 created_at < :created_at
             ;';
         }
-        if ($sql != '')
+        if ($sql !== '')
             $db->executeQuery($sql, $params);
 
         if (!empty($this->params['notification']['enable']) && $this->params['notification']['enable']) {
@@ -303,7 +303,7 @@ class AggregateCommand extends Command
                     r2.server_name = "' . $server['server_name'] . '" and r2.hostname = "' . $server['hostname'] . '"
             ;';
         }
-        if ($sql != '')
+        if ($sql !== '')
             $db->query($sql);
 
         $db->executeQuery('COMMIT');
@@ -489,7 +489,7 @@ class AggregateCommand extends Command
                     10
             ;';
         }
-        if ($sql != '') {
+        if ($sql !== '') {
             $db->query($sql);
 
             $sql = '
@@ -509,7 +509,7 @@ class AggregateCommand extends Command
             }
             unset($data);
 
-            if (sizeof($ids)) {
+            if (count($ids)) {
                 $sql = '
                     INSERT INTO ipm_timer
                         (timer_id, request_id, hit_count, value, tag_name, tag_value, created_at)
@@ -558,7 +558,7 @@ class AggregateCommand extends Command
                     10
             ;';
         }
-        if ($sql != '')
+        if ($sql !== '')
             $db->query($sql);
 
         $sql = '';
@@ -588,7 +588,7 @@ class AggregateCommand extends Command
                       10
             ;';
         }
-        if ($sql != '')
+        if ($sql !== '')
             $db->query($sql);
 
         // notification about abrupt drawdown of indicators
@@ -660,7 +660,7 @@ class AggregateCommand extends Command
                 $border = !empty($this->params['notification']['border']['req_time'][$server]) ?? $defaultBorder;
 
                 foreach ($hosts as $host => $values) {
-                    if (sizeof($values) > 1) {
+                    if (count($values) > 1) {
                         if (
                             $result[$server]['req_per_sec'] >= 0.2 &&
                             (
@@ -688,7 +688,7 @@ class AggregateCommand extends Command
         }
 
         foreach ($result as $server => $values) {
-            if (sizeof($values) < 2) {
+            if (count($values) < 2) {
                 unset($result[$server]);
             } else {
                 unset($result[$server]['req_per_sec']);
