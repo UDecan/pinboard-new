@@ -5,7 +5,7 @@ namespace Pinboard\DoctrineMigrations;
 use Doctrine\DBAL\Migrations\AbstractMigration;
 use Doctrine\DBAL\Schema\Schema;
 
-class Version20131014195150 extends AbstractMigration{
+class Version20231030103403 extends AbstractMigration{
 
    public function up(Schema $schema)
    {

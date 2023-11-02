@@ -9,7 +9,6 @@ use Symfony\Component\Routing\Annotation\Route;
 use Pinboard\Utils\Utils;
 use Pinboard\Utils\IDNaConvert;
 
-//#[Route('/twigs', name: 'twig', methods: ['GET'])]
 class MainController extends AbstractController
 {
     #[Route('/', methods: ['GET'])]

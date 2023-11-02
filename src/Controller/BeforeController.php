@@ -8,6 +8,7 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class BeforeController extends AbstractController
 {
+    // Не в том месте
     #[Route('/before', name: 'before')]
     public function index(): Response
     {

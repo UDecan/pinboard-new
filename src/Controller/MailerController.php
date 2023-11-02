@@ -6,6 +6,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 class MailerController extends AbstractController
 {
+    // Перенести, не там лежит
     #[Route('/email')]
     public function sendEmail(MailerInterface $mailer): Response
     {
