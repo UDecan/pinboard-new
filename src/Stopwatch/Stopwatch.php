@@ -5,7 +5,7 @@ namespace Pinboard\Stopwatch;
 class Stopwatch
 {
     protected $enabled = false;
-    protected $initTags = array();
+    protected $initTags = [];
 
     public function __construct()
     {
