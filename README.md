@@ -1,6 +1,6 @@
 <h1>Pinboard-new</h1>
 
-If your docker-compose version is less than 3, change the make file `docker compose` to `docker-compose`.
+If your docker-compose version is less than 3, change the make file in 5 line `docker compose` to `docker-compose`.
 
 1. make build
 2. make up
