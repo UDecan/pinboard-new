@@ -39,18 +39,19 @@ WORKDIR /var/www
 
 # Composer
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
-#ARG BUILD_MODE=dev
-#RUN if [ ${BUILD_MODE} = dev ]; \
-#    then \
-#      composer install --no-interaction; \
-#    else \
-#      composer install --no-dev --no-interaction --no-progress --no-scripts --optimize-autoloader; \
-#    fi;
-RUN chown -R www-data:www-data /var/www/vendor/
 
-RUN apk add --update npm
-RUN chown -R www-data:www-data /var/www/node_modules
-RUN chown -R www-data:www-data /var/www/public
+ARG BUILD_MODE=dev
+RUN if [ ${BUILD_MODE} = dev ]; \
+    then \
+      composer install --no-interaction; \
+    else \
+      composer install --no-dev --no-interaction --no-progress --no-scripts --optimize-autoloader; \
+    fi;
+
+RUN chown -R www-data:www-data /var/www/vendor/ && \
+    apk add --update npm && \
+    chown -R www-data:www-data /var/www/node_modules && \
+    chown -R www-data:www-data /var/www/public
 
 EXPOSE 8080
 

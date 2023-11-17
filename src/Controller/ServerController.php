@@ -18,10 +18,8 @@ class ServerController extends AbstractController
     private $allowedPeriods = ['1 day', '3 days', '1 week', '1 month'];
 
     #[Route('/{serverName}/{hostName}/overview.{format}', name: 'server', methods: ['GET'])]
-    public function index1(Request $request, $serverName, $hostName, $format)
+    public function actionOverview(Request $request, $serverName, $hostName, $format)
     {
-        Utils::checkUserAccess($app, $serverName);
-
         $period = $request->get('period', '1 day');
         if (!in_array($period, $this->allowedPeriods)) {
             $period = '1 day';
@@ -96,10 +94,8 @@ class ServerController extends AbstractController
     }
 
     #[Route('/{serverName}/{hostName}/timers', name: 'server', methods: ['GET'])]
-    public function index2(Request $request, $serverName, $hostName)
+    public function actionTimers(Request $request, $serverName, $hostName)
     {
-        Utils::checkUserAccess($app, $serverName);
-
         $period = $request->get('period', '1 day');
         if (!in_array($period, $this->allowedPeriods)) {
             $period = '1 day';
@@ -165,10 +161,8 @@ class ServerController extends AbstractController
     }
 
     #[Route('/{serverName}/{hostName}/statuses/{pageNum}/{colOrder}/{colDir}', name: 'server', methods: ['GET'])]
-    public function index3(Request $request, $serverName, $hostName, $pageNum, $colOrder, $colDir)
+    public function actionStatuses(Request $request, $serverName, $hostName, $pageNum, $colOrder, $colDir)
     {
-        Utils::checkUserAccess($app, $serverName);
-
         $pageNum = str_replace('page', '', $pageNum);
 
         $result = [
@@ -202,10 +196,8 @@ class ServerController extends AbstractController
     }
 
     #[Route('/{serverName}/{hostName}/req-time/{pageNum}/{colOrder}/{colDir}', name: 'server', methods: ['GET'])]
-    public function index4(Request $request, $serverName, $hostName, $pageNum, $colOrder, $colDir)
+    public function actionReqTime(Request $request, $serverName, $hostName, $pageNum, $colOrder, $colDir)
     {
-        Utils::checkUserAccess($app, $serverName);
-
         $pageNum = str_replace('page', '', $pageNum);
 
         $result = [
@@ -238,10 +230,8 @@ class ServerController extends AbstractController
     }
 
     #[Route('/{serverName}/{hostName}/mem-usage/{pageNum}/{colOrder}/{colDir}', name: 'server', methods: ['GET'])]
-    public function index5(Request $request, $serverName, $hostName, $pageNum, $colOrder, $colDir)
+    public function actionMemUsage(Request $request, $serverName, $hostName, $pageNum, $colOrder, $colDir)
     {
-        Utils::checkUserAccess($app, $serverName);
-
         $pageNum = str_replace('page', '', $pageNum);
 
         $result = [
@@ -274,10 +264,8 @@ class ServerController extends AbstractController
     }
 
     #[Route('/{serverName}/{hostName}/cpu-usage/{pageNum}/{colOrder}/{colDir}', name: 'server', methods: ['GET'])]
-    public function index6(Request $request, $serverName, $hostName, $pageNum, $colOrder, $colDir)
+    public function actionCpuUsage(Request $request, $serverName, $hostName, $pageNum, $colOrder, $colDir)
     {
-        Utils::checkUserAccess($app, $serverName);
-
         $pageNum = str_replace('page', '', $pageNum);
 
         $result = [
@@ -311,10 +299,8 @@ class ServerController extends AbstractController
 
     // MATCH = GET|POST
     #[Route('/{serverName}/{hostName}/live', name: 'server', methods: ['MATCH'])]
-    public function index7(Request $request, $serverName, $hostName)
+    public function actionLive(Request $request, $serverName, $hostName)
     {
-        Utils::checkUserAccess($app, $serverName);
-
         // filter from session
         $liveFilter = $app['session']->get('filter_params');
         if (!$liveFilter) {

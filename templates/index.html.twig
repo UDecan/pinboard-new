@@ -2,6 +2,7 @@
 
 {% block content %}
     <h1>Overview <small>for a last day</small></h1>
+    {% dump 'asd' %}
     {% if servers|length > 0 %}
         <table id="sortedTable" class="table table-bordered table-hover table-striped tablesorter">
             <thead>
@@ -19,7 +20,8 @@
                 <td><b><i>–</i></b></td>
                 <td><b><i>{{ total.error_count }}</i></b></td>
             </tr>
-            {% for server in servers if server.server_name is not empty %}
+            {% for server in servers%}
+                {% if server.server_name is not empty %}
                 <tr class="{{ server.error_count > 0 ? 'error' : '' }}">
                     <td>
                         <a href="{{ path('server', { serverName: server.server_name }) }}"
@@ -31,6 +33,7 @@
                     <td>{{ server.req_per_sec }}</td>
                     <td>{{ server.error_count }}</td>
                 </tr>
+                {% endif %}
             {% endfor %}
             </tbody>
         </table>

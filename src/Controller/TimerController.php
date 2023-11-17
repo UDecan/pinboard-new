@@ -9,7 +9,7 @@ use Symfony\Component\Routing\Annotation\Route;
 class TimerController extends AbstractController
 {
     #[Route('/{type}/{requestId}/{grouping}', name: 'timer', methods: ['GET'])]
-    public function index($type, $requestId, $grouping): Response
+    public function actionTimer($type, $requestId, $grouping): Response
     {
         if (!in_array($type, $requestTypes)) {
             $app->abort(404, "Type $type not allowed. Allowed types: " . implode(', ', $requestTypes));
@@ -24,8 +24,6 @@ class TimerController extends AbstractController
         if (!$request) {
             $app->abort(404, "Request #$requestId not found.");
         }
-
-        Utils::checkUserAccess($app, $request['server_name']);
 
         $request['script_name'] = Utils::urlDecode($request['script_name']);
         $request = Utils::parseRequestTags($request);

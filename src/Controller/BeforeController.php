@@ -5,12 +5,14 @@ namespace App\Controller;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Algo26\IdnaConvert\ToUnicode;
+use Pinboard\Utils\Utils;
 
 class BeforeController extends AbstractController
 {
     // Не в том месте
     #[Route('/before', name: 'before')]
-    public function index(): Response
+    public function actionBefore(): Response
     {
         $result = [
             'servers' => []
@@ -49,12 +51,13 @@ class BeforeController extends AbstractController
         $list = $stmt->fetchAll();
         $stmt->closeCursor();
 
-        $idn = new IDNaConvert(['idn_version' => 2008]);
+
+        $idn = new ToUnicode();
 
         $ips = [];
         foreach ($list as $data) {
             if (stripos($data['server_name'], 'xn--') !== false) {
-                $data['server_name'] = $idn->decode($data['server_name']);
+                $data['server_name'] = $idn->convertUrl($data['server_name']);
             }
 
             if (preg_match('/\d+\.\d+\.\d+\.\d+/', $data['server_name'])) {
