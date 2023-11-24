@@ -3,11 +3,16 @@
 namespace App\Entity;
 
 use App\Repository\IpmReportByServerNameRepository;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: IpmReportByServerNameRepository::class)]
 class IpmReportByServerName
 {
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    #[ORM\Column]
+    private int $id;
     #[ORM\Column(nullable: true)]
     private ?int $req_count = null;
 
@@ -53,8 +58,8 @@ class IpmReportByServerName
     #[ORM\Column(nullable: true)]
     private ?string $server_name = null;
 
-    #[ORM\Column(nullable: true)]
-    private ?string $created_at = null;
+    #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
+    private ?\DateTimeInterface $createdAt = null;
 
     public function getReqCount(): ?int
     {

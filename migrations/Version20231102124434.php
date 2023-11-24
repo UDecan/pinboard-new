@@ -40,8 +40,8 @@ final class Version20231102124434 extends AbstractMigration
                     `memory_footprint_total` float DEFAULT NULL,
                     `memory_footprint_percent` float DEFAULT NULL,
                     `req_time_median` float DEFAULT NULL,
-                    `index_value` varchar(256) DEFAULT NULL
-                    ,`p90` float DEFAULT NULL,
+                    `index_value` varchar(256) DEFAULT NULL,
+                    `p90` float DEFAULT NULL,
                     `p95` float DEFAULT NULL,
                     `p99` float DEFAULT NULL
             ) ENGINE=PINBA DEFAULT CHARSET=latin1 COMMENT='report6:::90,95,99';
@@ -67,8 +67,8 @@ final class Version20231102124434 extends AbstractMigration
                     `memory_footprint_total` float DEFAULT NULL,
                     `memory_footprint_percent` float DEFAULT NULL,
                     `req_time_median` float DEFAULT NULL,
-                    `index_value` varchar(256) DEFAULT NULL
-                    ,`p90` float DEFAULT NULL,
+                    `index_value` varchar(256) DEFAULT NULL,
+                    `p90` float DEFAULT NULL,
                     `p95` float DEFAULT NULL,
                     `p99` float DEFAULT NULL
             ) ENGINE=PINBA DEFAULT CHARSET=latin1 COMMENT='report2:::90,95,99';
@@ -94,8 +94,8 @@ final class Version20231102124434 extends AbstractMigration
                     `memory_footprint_total` float DEFAULT NULL,
                     `memory_footprint_percent` float DEFAULT NULL,
                     `req_time_median` float DEFAULT NULL,
-                    `index_value` varchar(256) DEFAULT NULL
-                    ,`p90` float DEFAULT NULL,
+                    `index_value` varchar(256) DEFAULT NULL,
+                    `p90` float DEFAULT NULL,
                     `p95` float DEFAULT NULL,
                     `p99` float DEFAULT NULL
             ) ENGINE=PINBA DEFAULT CHARSET=latin1 COMMENT='report3:::90,95,99';

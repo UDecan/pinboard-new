@@ -23,7 +23,11 @@ class MainController extends AbstractController
 //            return $this->redirectToRoute('login');
 //        }
 
-        $result['servers'] = (new IpmReportByServerNameRepository())->findAllServers();
+//        $servers = $this->getDoctrine()
+//            ->getRepository('IpmReportByServerNameRepository')
+//            ->findAllServers();
+
+//        $result['servers'] = (new IpmReportByServerNameRepository())->findAllServers();
 
         $idn = new ToUnicode();
 
