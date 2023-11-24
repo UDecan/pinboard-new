@@ -15,7 +15,7 @@ use Algo26\IdnaConvert\ToUnicode;
 class MainController extends AbstractController
 {
     #[Route('/', methods: ['GET'])]
-    public function indexAction(): Response
+    public function indexAction(IpmReportByServerNameRepository $ipmReportByServerNameRepository): Response
     {
         $result = [];
 
@@ -23,11 +23,7 @@ class MainController extends AbstractController
 //            return $this->redirectToRoute('login');
 //        }
 
-//        $servers = $this->getDoctrine()
-//            ->getRepository('IpmReportByServerNameRepository')
-//            ->findAllServers();
-
-//        $result['servers'] = (new IpmReportByServerNameRepository())->findAllServers();
+        $result['servers'] = $ipmReportByServerNameRepository->findAllServers();
 
         $idn = new ToUnicode();
 
@@ -49,7 +45,7 @@ class MainController extends AbstractController
 
         $result['total'] = $total;
 
-//        return $this->render('index.html.twig', $result);
-        return $this->render('index.html.twig', []);
+        return $this->render('index.html.twig', $result);
+//        return $this->render('index.html.twig', []);
     }
 }

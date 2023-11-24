@@ -30,15 +30,14 @@ class IpmReportByServerNameRepository extends ServiceEntityRepository
                 avg(a.req_per_sec) as req_per_sec,
                 (
                     SELECT
-                        count(*)
+                        count(b.server_name)
                     FROM
                         ipm_status_details b
-                    WHERE
-                        a.server_name = b.server_name AND b.created_at > :created_at
+
                 )
                 as error_count")
-            ->andWhere('a.created_at > :created_at')
-            ->setParameter('created_at', date('Y-m-d H:00:00', strtotime('-1 day')))
+//            ->andWhere('a.created_at > :created_at')
+//            ->setParameter('created_at', date('Y-m-d H:00:00', strtotime('-1 day')))
             ->groupBy('a.server_name')
             ->getQuery()
             ->getResult();

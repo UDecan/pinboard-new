@@ -12,4 +12,4 @@ Login: admin@admin.com
 <br>
 Password: admin
 <br>
-6. http://127.0.0.1:888/
+http://127.0.0.1:888/
