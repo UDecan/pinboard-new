@@ -11,4 +11,5 @@ If your docker-compose version is less than 3, change the make file in 5 line `d
 Login: admin@admin.com
 <br>
 Password: admin
+<br>
 6. http://127.0.0.1:888/
