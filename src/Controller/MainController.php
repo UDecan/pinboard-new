@@ -19,10 +19,6 @@ class MainController extends AbstractController
     {
         $result = [];
 
-//        if (!$this->isUserLogged()) {
-//            return $this->redirectToRoute('login');
-//        }
-
         $result['servers'] = $ipmReportByServerNameRepository->findAllServers();
 
         $idn = new ToUnicode();
@@ -44,8 +40,8 @@ class MainController extends AbstractController
         }
 
         $result['total'] = $total;
+        $result['base_url'] = '/';
 
         return $this->render('index.html.twig', $result);
-//        return $this->render('index.html.twig', []);
     }
 }

@@ -46,12 +46,12 @@ class IpmCpuUsageDetails
         return $this;
     }
 
-    public function getHostName(): ?string
+    public function getHostname(): ?string
     {
         return $this->hostName;
     }
 
-    public function setHostName(?string $hostName): static
+    public function setHostname(?string $hostName): static
     {
         $this->hostName = $hostName;
 

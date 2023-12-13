@@ -6,7 +6,6 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 class MailerController extends AbstractController
 {
-    // Перенести, не там лежит
     #[Route('/email')]
     public function sendEmail(MailerInterface $mailer): Response
     {
@@ -22,7 +21,5 @@ class MailerController extends AbstractController
             ->html('<p>See Twig integration for better HTML integration!</p>');
 
         $mailer->send($email);
-
-        // ...
     }
 }

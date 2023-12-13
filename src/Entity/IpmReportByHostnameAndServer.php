@@ -2,11 +2,12 @@
 
 namespace App\Entity;
 
-use App\Repository\IpmPinbaReportByHostName909599Repository;
+use App\Repository\IpmReportByHostnameAndServerRepository;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
-#[ORM\Entity(repositoryClass: IpmPinbaReportByHostName909599Repository::class)]
-class IpmPinbaReportByHostName909599
+#[ORM\Entity(repositoryClass: IpmReportByHostnameAndServerRepository::class)]
+class IpmReportByHostnameAndServer
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -23,10 +24,10 @@ class IpmPinbaReportByHostName909599
     private ?float $reqTimeTotal = null;
 
     #[ORM\Column(nullable: true)]
-    private ?float $reqTimePercent = null;
+    private ?float $reqTimePerSec = null;
 
     #[ORM\Column(nullable: true)]
-    private ?float $reqTimePerSec = null;
+    private ?float $reqTimePercent = null;
 
     #[ORM\Column(nullable: true)]
     private ?float $ruUtimeTotal = null;
@@ -39,9 +40,6 @@ class IpmPinbaReportByHostName909599
 
     #[ORM\Column(nullable: true)]
     private ?float $ruStimeTotal = null;
-
-    #[ORM\Column(nullable: true)]
-    private ?float $ruStimePercent = null;
 
     #[ORM\Column(nullable: true)]
     private ?float $ruStimePerSec = null;
@@ -58,26 +56,11 @@ class IpmPinbaReportByHostName909599
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $hostName = null;
 
-    #[ORM\Column(nullable: true)]
-    private ?float $memoryFootprintTotal = null;
-
-    #[ORM\Column(nullable: true)]
-    private ?float $memoryFootprintPercent = null;
-
-    #[ORM\Column(nullable: true)]
-    private ?float $reqTimeMedian = null;
-
     #[ORM\Column(length: 255, nullable: true)]
-    private ?string $indexValue = null;
+    private ?string $serverName = null;
 
-    #[ORM\Column(nullable: true)]
-    private ?float $p90 = null;
-
-    #[ORM\Column(nullable: true)]
-    private ?float $p95 = null;
-
-    #[ORM\Column(nullable: true)]
-    private ?float $p99 = null;
+    #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
+    private ?\DateTimeInterface $createdAt = null;
 
     public function getId(): ?int
     {
@@ -120,18 +103,6 @@ class IpmPinbaReportByHostName909599
         return $this;
     }
 
-    public function getReqTimePercent(): ?float
-    {
-        return $this->reqTimePercent;
-    }
-
-    public function setReqTimePercent(?float $reqTimePercent): static
-    {
-        $this->reqTimePercent = $reqTimePercent;
-
-        return $this;
-    }
-
     public function getReqTimePerSec(): ?float
     {
         return $this->reqTimePerSec;
@@ -140,6 +111,18 @@ class IpmPinbaReportByHostName909599
     public function setReqTimePerSec(?float $reqTimePerSec): static
     {
         $this->reqTimePerSec = $reqTimePerSec;
+
+        return $this;
+    }
+
+    public function getReqTimePercent(): ?float
+    {
+        return $this->reqTimePercent;
+    }
+
+    public function setReqTimePercent(?float $reqTimePercent): static
+    {
+        $this->reqTimePercent = $reqTimePercent;
 
         return $this;
     }
@@ -188,18 +171,6 @@ class IpmPinbaReportByHostName909599
     public function setRuStimeTotal(?float $ruStimeTotal): static
     {
         $this->ruStimeTotal = $ruStimeTotal;
-
-        return $this;
-    }
-
-    public function getRuStimePercent(): ?float
-    {
-        return $this->ruStimePercent;
-    }
-
-    public function setRuStimePercent(?float $ruStimePercent): static
-    {
-        $this->ruStimePercent = $ruStimePercent;
 
         return $this;
     }
@@ -264,86 +235,26 @@ class IpmPinbaReportByHostName909599
         return $this;
     }
 
-    public function getMemoryFootprintTotal(): ?float
+    public function getServerName(): ?string
     {
-        return $this->memoryFootprintTotal;
+        return $this->serverName;
     }
 
-    public function setMemoryFootprintTotal(?float $memoryFootprintTotal): static
+    public function setServerName(?string $serverName): static
     {
-        $this->memoryFootprintTotal = $memoryFootprintTotal;
+        $this->serverName = $serverName;
 
         return $this;
     }
 
-    public function getMemoryFootprintPercent(): ?float
+    public function getCreatedAt(): ?\DateTimeInterface
     {
-        return $this->memoryFootprintPercent;
+        return $this->createdAt;
     }
 
-    public function setMemoryFootprintPercent(?float $memoryFootprintPercent): static
+    public function setCreatedAt(?\DateTimeInterface $createdAt): static
     {
-        $this->memoryFootprintPercent = $memoryFootprintPercent;
-
-        return $this;
-    }
-
-    public function getReqTimeMedian(): ?float
-    {
-        return $this->reqTimeMedian;
-    }
-
-    public function setReqTimeMedian(?float $reqTimeMedian): static
-    {
-        $this->reqTimeMedian = $reqTimeMedian;
-
-        return $this;
-    }
-
-    public function getIndexValue(): ?string
-    {
-        return $this->indexValue;
-    }
-
-    public function setIndexValue(?string $indexValue): static
-    {
-        $this->indexValue = $indexValue;
-
-        return $this;
-    }
-
-    public function getP90(): ?float
-    {
-        return $this->p90;
-    }
-
-    public function setP90(?float $p90): static
-    {
-        $this->p90 = $p90;
-
-        return $this;
-    }
-
-    public function getP95(): ?float
-    {
-        return $this->p95;
-    }
-
-    public function setP95(?float $p95): static
-    {
-        $this->p95 = $p95;
-
-        return $this;
-    }
-
-    public function getP99(): ?float
-    {
-        return $this->p99;
-    }
-
-    public function setP99(?float $p99): static
-    {
-        $this->p99 = $p99;
+        $this->createdAt = $createdAt;
 
         return $this;
     }

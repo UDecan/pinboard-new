@@ -2,11 +2,11 @@
 
 namespace App\Entity;
 
-use App\Repository\IpmPinbaReportByHostNameAndServer909599Repository;
+use App\Repository\IpmPinbaReportByHostName_90_95_99Repository;
 use Doctrine\ORM\Mapping as ORM;
 
-#[ORM\Entity(repositoryClass: IpmPinbaReportByHostNameAndServer909599Repository::class)]
-class IpmPinbaReportByHostNameAndServer909599
+#[ORM\Entity(repositoryClass: IpmPinbaReportByHostName_90_95_99Repository::class)]
+class IpmPinbaReportByHostname_90_95_99
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -57,9 +57,6 @@ class IpmPinbaReportByHostNameAndServer909599
 
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $hostName = null;
-
-    #[ORM\Column(length: 255, nullable: true)]
-    private ?string $serverName = null;
 
     #[ORM\Column(nullable: true)]
     private ?float $memoryFootprintTotal = null;
@@ -263,18 +260,6 @@ class IpmPinbaReportByHostNameAndServer909599
     public function setHostName(?string $hostName): static
     {
         $this->hostName = $hostName;
-
-        return $this;
-    }
-
-    public function getServerName(): ?string
-    {
-        return $this->serverName;
-    }
-
-    public function setServerName(?string $serverName): static
-    {
-        $this->serverName = $serverName;
 
         return $this;
     }

@@ -2,27 +2,27 @@
 
 namespace App\Repository;
 
-use App\Entity\IpmReportByHostNameAndServer;
+use App\Entity\IpmReportByHostname;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
- * @extends ServiceEntityRepository<IpmReportByHostNameAndServer>
+ * @extends ServiceEntityRepository<IpmReportByHostname>
  *
- * @method IpmReportByHostNameAndServer|null find($id, $lockMode = null, $lockVersion = null)
- * @method IpmReportByHostNameAndServer|null findOneBy(array $criteria, array $orderBy = null)
- * @method IpmReportByHostNameAndServer[]    findAll()
- * @method IpmReportByHostNameAndServer[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
+ * @method IpmReportByHostname|null find($id, $lockMode = null, $lockVersion = null)
+ * @method IpmReportByHostname|null findOneBy(array $criteria, array $orderBy = null)
+ * @method IpmReportByHostname[]    findAll()
+ * @method IpmReportByHostname[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
  */
-class IpmReportByHostNameAndServerRepository extends ServiceEntityRepository
+class IpmReportByHostnameRepository extends ServiceEntityRepository
 {
     public function __construct(ManagerRegistry $registry)
     {
-        parent::__construct($registry, IpmReportByHostNameAndServer::class);
+        parent::__construct($registry, IpmReportByHostname::class);
     }
 
 //    /**
-//     * @return IpmReportByHostNameAndServer[] Returns an array of IpmReportByHostNameAndServer objects
+//     * @return IpmReportByHostname[] Returns an array of IpmReportByHostname objects
 //     */
 //    public function findByExampleField($value): array
 //    {
@@ -36,7 +36,7 @@ class IpmReportByHostNameAndServerRepository extends ServiceEntityRepository
 //        ;
 //    }
 
-//    public function findOneBySomeField($value): ?IpmReportByHostNameAndServer
+//    public function findOneBySomeField($value): ?IpmReportByHostname
 //    {
 //        return $this->createQueryBuilder('i')
 //            ->andWhere('i.exampleField = :val')

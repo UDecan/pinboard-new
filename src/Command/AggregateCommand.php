@@ -2,19 +2,22 @@
 
 namespace Pinboard\Command;
 
+use App\Controller\MailerController;
 use Exception;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Mailer\Mailer;
+use Symfony\Component\Mailer\Transport;
+use Symfony\Component\Mime\Email;
 use Symfony\Component\Yaml\Yaml;
 
 class AggregateCommand extends Command
 {
     protected $mailer;
     protected $params;
-    protected $app;
     protected $output;
 
     const DEFAULT_REQ_TIME_BORDER = 1.5;
@@ -30,39 +33,22 @@ class AggregateCommand extends Command
 
     protected function initMailer()
     {
-        if (!empty($this->params['smtp'])) {
-            $transport = \Swift_SmtpTransport::newInstance()
-                ->setHost($this->params['smtp']['server'])
-                ->setPort($this->params['smtp']['port']);
+        $dsn = 'smtp://user:pass@smtp.example.com:25';
 
-            if (!empty($this->params['smtp']['username'])) {
-                $transport->setUsername($this->params['smtp']['username']);
-            }
+        $transport = Transport::fromDsn($dsn);
 
-            if (!empty($this->params['smtp']['password'])) {
-                $transport->setPassword($this->params['smtp']['password']);
-            }
-
-            if (!empty($this->params['smtp']['encryption'])) {
-                $transport->setEncryption($this->params['smtp']['encryption']);
-            }
-
-            if (!empty($this->params['smtp']['auth_mode'])) {
-                $transport->setAuthMode($this->params['smtp']['auth_mode']);
-            }
-        } else {
-            $transport = \Swift_MailTransport::newInstance();
-        }
-
-
-        $this->mailer = \Swift_Mailer::newInstance($transport);
+        $this->mailer = new Mailer($transport);
     }
 
     protected function sendEmail($message)
     {
         if ($this->mailer) {
             try {
-                $this->mailer->send($message);
+                $email = (new Email())
+                    ->from('support@example.com')
+                    ->subject('Attention!')
+                    ->text($message);
+                $this->mailer->send($email);
             } catch (Exception $e) {
                 $this->output->writeln('<error>Failed to send email message. Error output:</error>');
                 $this->output->writeln('<error></error>');
@@ -134,7 +120,6 @@ class AggregateCommand extends Command
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $this->app = $this->getApplication()->getSilex();
         $this->app->boot();
         $this->params = $this->app['params'];
         $this->output = $output;

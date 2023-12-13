@@ -2,11 +2,11 @@
 
 namespace App\Entity;
 
-use App\Repository\IpmReportByHostNameRepository;
+use App\Repository\IpmPinbaReportByServer_90_95_99Repository;
 use Doctrine\ORM\Mapping as ORM;
 
-#[ORM\Entity(repositoryClass: IpmReportByHostNameRepository::class)]
-class IpmReportByHostName
+#[ORM\Entity(repositoryClass: IpmPinbaReportByServer_90_95_99Repository::class)]
+class IpmPinbaReportByServer_90_95_99
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -38,7 +38,7 @@ class IpmReportByHostName
     private ?float $ruUtimePerSec = null;
 
     #[ORM\Column(nullable: true)]
-    private ?float $riStimeTotal = null;
+    private ?float $ruStimeTotal = null;
 
     #[ORM\Column(nullable: true)]
     private ?float $ruStimePercent = null;
@@ -56,10 +56,28 @@ class IpmReportByHostName
     private ?float $trafficPerSec = null;
 
     #[ORM\Column(length: 255, nullable: true)]
-    private ?string $hostName = null;
+    private ?string $serverName = null;
+
+    #[ORM\Column(nullable: true)]
+    private ?float $memoryFootprintTotal = null;
+
+    #[ORM\Column(nullable: true)]
+    private ?float $memoryFootprintPercent = null;
+
+    #[ORM\Column(nullable: true)]
+    private ?float $reqTimeMedian = null;
 
     #[ORM\Column(length: 255, nullable: true)]
-    private ?string $createdAt = null;
+    private ?string $indexValue = null;
+
+    #[ORM\Column(nullable: true)]
+    private ?float $p90 = null;
+
+    #[ORM\Column(nullable: true)]
+    private ?float $p95 = null;
+
+    #[ORM\Column(nullable: true)]
+    private ?float $p99 = null;
 
     public function getId(): ?int
     {
@@ -162,14 +180,14 @@ class IpmReportByHostName
         return $this;
     }
 
-    public function getRiStimeTotal(): ?float
+    public function getRuStimeTotal(): ?float
     {
-        return $this->riStimeTotal;
+        return $this->ruStimeTotal;
     }
 
-    public function setRiStimeTotal(?float $riStimeTotal): static
+    public function setRuStimeTotal(?float $ruStimeTotal): static
     {
-        $this->riStimeTotal = $riStimeTotal;
+        $this->ruStimeTotal = $ruStimeTotal;
 
         return $this;
     }
@@ -234,26 +252,98 @@ class IpmReportByHostName
         return $this;
     }
 
-    public function getHostName(): ?string
+    public function getServerName(): ?string
     {
-        return $this->hostName;
+        return $this->serverName;
     }
 
-    public function setHostName(?string $hostName): static
+    public function setServerName(?string $serverName): static
     {
-        $this->hostName = $hostName;
+        $this->serverName = $serverName;
 
         return $this;
     }
 
-    public function getCreatedAt(): ?string
+    public function getMemoryFootprintTotal(): ?float
     {
-        return $this->createdAt;
+        return $this->memoryFootprintTotal;
     }
 
-    public function setCreatedAt(?string $createdAt): static
+    public function setMemoryFootprintTotal(?float $memoryFootprintTotal): static
     {
-        $this->createdAt = $createdAt;
+        $this->memoryFootprintTotal = $memoryFootprintTotal;
+
+        return $this;
+    }
+
+    public function getMemoryFootprintPercent(): ?float
+    {
+        return $this->memoryFootprintPercent;
+    }
+
+    public function setMemoryFootprintPercent(?float $memoryFootprintPercent): static
+    {
+        $this->memoryFootprintPercent = $memoryFootprintPercent;
+
+        return $this;
+    }
+
+    public function getReqTimeMedian(): ?float
+    {
+        return $this->reqTimeMedian;
+    }
+
+    public function setReqTimeMedian(?float $reqTimeMedian): static
+    {
+        $this->reqTimeMedian = $reqTimeMedian;
+
+        return $this;
+    }
+
+    public function getIndexValue(): ?string
+    {
+        return $this->indexValue;
+    }
+
+    public function setIndexValue(?string $indexValue): static
+    {
+        $this->indexValue = $indexValue;
+
+        return $this;
+    }
+
+    public function getP90(): ?float
+    {
+        return $this->p90;
+    }
+
+    public function setP90(?float $p90): static
+    {
+        $this->p90 = $p90;
+
+        return $this;
+    }
+
+    public function getP95(): ?float
+    {
+        return $this->p95;
+    }
+
+    public function setP95(?float $p95): static
+    {
+        $this->p95 = $p95;
+
+        return $this;
+    }
+
+    public function getP99(): ?float
+    {
+        return $this->p99;
+    }
+
+    public function setP99(?float $p99): static
+    {
+        $this->p99 = $p99;
 
         return $this;
     }

@@ -2,27 +2,27 @@
 
 namespace App\Repository;
 
-use App\Entity\IpmReport2ByHostnameAndServer;
+use App\Entity\IpmReportByHostnameAndServer;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
- * @extends ServiceEntityRepository<IpmReport2ByHostnameAndServer>
+ * @extends ServiceEntityRepository<IpmReportByHostnameAndServer>
  *
- * @method IpmReport2ByHostnameAndServer|null find($id, $lockMode = null, $lockVersion = null)
- * @method IpmReport2ByHostnameAndServer|null findOneBy(array $criteria, array $orderBy = null)
- * @method IpmReport2ByHostnameAndServer[]    findAll()
- * @method IpmReport2ByHostnameAndServer[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
+ * @method IpmReportByHostnameAndServer|null find($id, $lockMode = null, $lockVersion = null)
+ * @method IpmReportByHostnameAndServer|null findOneBy(array $criteria, array $orderBy = null)
+ * @method IpmReportByHostnameAndServer[]    findAll()
+ * @method IpmReportByHostnameAndServer[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
  */
-class IpmReport2ByHostnameAndServerRepository extends ServiceEntityRepository
+class IpmReportByHostnameAndServerRepository extends ServiceEntityRepository
 {
     public function __construct(ManagerRegistry $registry)
     {
-        parent::__construct($registry, IpmReport2ByHostnameAndServer::class);
+        parent::__construct($registry, IpmReportByHostnameAndServer::class);
     }
 
 //    /**
-//     * @return IpmReport2ByHostnameAndServer[] Returns an array of IpmReport2ByHostnameAndServer objects
+//     * @return IpmReportByHostnameAndServer[] Returns an array of IpmReportByHostnameAndServer objects
 //     */
 //    public function findByExampleField($value): array
 //    {
@@ -36,7 +36,7 @@ class IpmReport2ByHostnameAndServerRepository extends ServiceEntityRepository
 //        ;
 //    }
 
-//    public function findOneBySomeField($value): ?IpmReport2ByHostnameAndServer
+//    public function findOneBySomeField($value): ?IpmReportByHostnameAndServer
 //    {
 //        return $this->createQueryBuilder('i')
 //            ->andWhere('i.exampleField = :val')

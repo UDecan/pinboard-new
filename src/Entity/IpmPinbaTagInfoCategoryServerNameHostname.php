@@ -2,11 +2,11 @@
 
 namespace App\Entity;
 
-use App\Repository\IpmPinbaTagInfoGroupServerServerNameHostNameRepository;
+use App\Repository\IpmPinbaTagInfoCategoryServerNameHostnameRepository;
 use Doctrine\ORM\Mapping as ORM;
 
-#[ORM\Entity(repositoryClass: IpmPinbaTagInfoGroupServerServerNameHostNameRepository::class)]
-class IpmPinbaTagInfoGroupServerServerNameHostName
+#[ORM\Entity(repositoryClass: IpmPinbaTagInfoCategoryServerNameHostnameRepository::class)]
+class IpmPinbaTagInfoCategoryServerNameHostname
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -22,9 +22,6 @@ class IpmPinbaTagInfoGroupServerServerNameHostName
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $tag3Value = null;
 
-    #[ORM\Column(length: 255, nullable: true)]
-    private ?string $tag4Value = null;
-
     #[ORM\Column(nullable: true)]
     private ?int $reqCount = null;
 
@@ -32,16 +29,13 @@ class IpmPinbaTagInfoGroupServerServerNameHostName
     private ?float $reqPerSec = null;
 
     #[ORM\Column(nullable: true)]
-    private ?int $hitCount = null;
+    private ?int $hotCount = null;
 
     #[ORM\Column(nullable: true)]
     private ?float $hitPerSec = null;
 
-    #[ORM\Column(nullable: true)]
+    #[ORM\Column]
     private ?float $timerValue = null;
-
-    #[ORM\Column(nullable: true)]
-    private ?float $timerMedian = null;
 
     #[ORM\Column(nullable: true)]
     private ?float $ruUtimeValue = null;
@@ -102,18 +96,6 @@ class IpmPinbaTagInfoGroupServerServerNameHostName
         return $this;
     }
 
-    public function getTag4Value(): ?string
-    {
-        return $this->tag4Value;
-    }
-
-    public function setTag4Value(?string $tag4Value): static
-    {
-        $this->tag4Value = $tag4Value;
-
-        return $this;
-    }
-
     public function getReqCount(): ?int
     {
         return $this->reqCount;
@@ -138,14 +120,14 @@ class IpmPinbaTagInfoGroupServerServerNameHostName
         return $this;
     }
 
-    public function getHitCount(): ?int
+    public function getHotCount(): ?int
     {
-        return $this->hitCount;
+        return $this->hotCount;
     }
 
-    public function setHitCount(?int $hitCount): static
+    public function setHotCount(?int $hotCount): static
     {
-        $this->hitCount = $hitCount;
+        $this->hotCount = $hotCount;
 
         return $this;
     }
@@ -167,21 +149,9 @@ class IpmPinbaTagInfoGroupServerServerNameHostName
         return $this->timerValue;
     }
 
-    public function setTimerValue(?float $timerValue): static
+    public function setTimerValue(float $timerValue): static
     {
         $this->timerValue = $timerValue;
-
-        return $this;
-    }
-
-    public function getTimerMedian(): ?float
-    {
-        return $this->timerMedian;
-    }
-
-    public function setTimerMedian(?float $timerMedian): static
-    {
-        $this->timerMedian = $timerMedian;
 
         return $this;
     }
@@ -203,7 +173,7 @@ class IpmPinbaTagInfoGroupServerServerNameHostName
         return $this->ruStimeValue;
     }
 
-    public function setRuStimeValue(?float $ruStimeValue): static
+    public function setRuStimeValue(float $ruStimeValue): static
     {
         $this->ruStimeValue = $ruStimeValue;
 
@@ -215,11 +185,9 @@ class IpmPinbaTagInfoGroupServerServerNameHostName
         return $this->indexValue;
     }
 
-    public function setIndexValue(?string $indexValue): static
+    public function setIndexValue(?string $indexValue): void
     {
         $this->indexValue = $indexValue;
-
-        return $this;
     }
 
     public function getP90(): ?float
@@ -227,11 +195,9 @@ class IpmPinbaTagInfoGroupServerServerNameHostName
         return $this->p90;
     }
 
-    public function setP90(?float $p90): static
+    public function setP90(?float $p90): void
     {
         $this->p90 = $p90;
-
-        return $this;
     }
 
     public function getP95(): ?float
@@ -239,11 +205,9 @@ class IpmPinbaTagInfoGroupServerServerNameHostName
         return $this->p95;
     }
 
-    public function setP95(?float $p95): static
+    public function setP95(?float $p95): void
     {
         $this->p95 = $p95;
-
-        return $this;
     }
 
     public function getP99(): ?float
@@ -251,10 +215,8 @@ class IpmPinbaTagInfoGroupServerServerNameHostName
         return $this->p99;
     }
 
-    public function setP99(?float $p99): static
+    public function setP99(?float $p99): void
     {
         $this->p99 = $p99;
-
-        return $this;
     }
 }

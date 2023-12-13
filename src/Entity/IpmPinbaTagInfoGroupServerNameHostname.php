@@ -2,11 +2,11 @@
 
 namespace App\Entity;
 
-use App\Repository\IpmPinbaTagInfoCategoryServerNameHostNameRepository;
+use App\Repository\IpmPinbaTagInfoGroupServerNameHostnameRepository;
 use Doctrine\ORM\Mapping as ORM;
 
-#[ORM\Entity(repositoryClass: IpmPinbaTagInfoCategoryServerNameHostNameRepository::class)]
-class IpmPinbaTagInfoCategoryServerNameHostName
+#[ORM\Entity(repositoryClass: IpmPinbaTagInfoGroupServerNameHostnameRepository::class)]
+class IpmPinbaTagInfoGroupServerNameHostname
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -29,13 +29,16 @@ class IpmPinbaTagInfoCategoryServerNameHostName
     private ?float $reqPerSec = null;
 
     #[ORM\Column(nullable: true)]
-    private ?int $hotCount = null;
+    private ?int $hitCount = null;
 
     #[ORM\Column(nullable: true)]
     private ?float $hitPerSec = null;
 
-    #[ORM\Column]
+    #[ORM\Column(nullable: true)]
     private ?float $timerValue = null;
+
+    #[ORM\Column(nullable: true)]
+    private ?float $timerMedian = null;
 
     #[ORM\Column(nullable: true)]
     private ?float $ruUtimeValue = null;
@@ -120,14 +123,14 @@ class IpmPinbaTagInfoCategoryServerNameHostName
         return $this;
     }
 
-    public function getHotCount(): ?int
+    public function getHitCount(): ?int
     {
-        return $this->hotCount;
+        return $this->hitCount;
     }
 
-    public function setHotCount(?int $hotCount): static
+    public function setHitCount(?int $hitCount): static
     {
-        $this->hotCount = $hotCount;
+        $this->hitCount = $hitCount;
 
         return $this;
     }
@@ -149,9 +152,21 @@ class IpmPinbaTagInfoCategoryServerNameHostName
         return $this->timerValue;
     }
 
-    public function setTimerValue(float $timerValue): static
+    public function setTimerValue(?float $timerValue): static
     {
         $this->timerValue = $timerValue;
+
+        return $this;
+    }
+
+    public function getTimerMedian(): ?float
+    {
+        return $this->timerMedian;
+    }
+
+    public function setTimerMedian(?float $timerMedian): static
+    {
+        $this->timerMedian = $timerMedian;
 
         return $this;
     }
@@ -173,7 +188,7 @@ class IpmPinbaTagInfoCategoryServerNameHostName
         return $this->ruStimeValue;
     }
 
-    public function setRuStimeValue(float $ruStimeValue): static
+    public function setRuStimeValue(?float $ruStimeValue): static
     {
         $this->ruStimeValue = $ruStimeValue;
 
@@ -185,9 +200,11 @@ class IpmPinbaTagInfoCategoryServerNameHostName
         return $this->indexValue;
     }
 
-    public function setIndexValue(?string $indexValue): void
+    public function setIndexValue(?string $indexValue): static
     {
         $this->indexValue = $indexValue;
+
+        return $this;
     }
 
     public function getP90(): ?float
@@ -195,9 +212,11 @@ class IpmPinbaTagInfoCategoryServerNameHostName
         return $this->p90;
     }
 
-    public function setP90(?float $p90): void
+    public function setP90(?float $p90): static
     {
         $this->p90 = $p90;
+
+        return $this;
     }
 
     public function getP95(): ?float
@@ -205,9 +224,11 @@ class IpmPinbaTagInfoCategoryServerNameHostName
         return $this->p95;
     }
 
-    public function setP95(?float $p95): void
+    public function setP95(?float $p95): static
     {
         $this->p95 = $p95;
+
+        return $this;
     }
 
     public function getP99(): ?float
@@ -215,8 +236,10 @@ class IpmPinbaTagInfoCategoryServerNameHostName
         return $this->p99;
     }
 
-    public function setP99(?float $p99): void
+    public function setP99(?float $p99): static
     {
         $this->p99 = $p99;
+
+        return $this;
     }
 }

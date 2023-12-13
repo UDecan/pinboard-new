@@ -12,59 +12,6 @@ class Utils
         return dechex(rand(0, 10000000));
     }
 
-    /**
-     * Return string or array with hosts regexp for access
-     */
-    public static function getUserAccessHostsRegexp(mixed $app): string|array
-    {
-        $hostsRegExp = '.*';
-
-        if (!empty($app['params']['secure']['enable'])) {
-            $user = $app['security']->getToken()->getUser();
-
-            $hostsRegExp = isset($app['params']['secure']['users'][$user->getUsername()]['hosts'])
-                ? $app['params']['secure']['users'][$user->getUsername()]['hosts']
-                : '.*';
-
-            $hostsRegExp = is_array($hostsRegExp) ? $hostsRegExp : [$hostsRegExp];
-
-            //ignore empty rules
-            foreach ($hostsRegExp as &$rgx) {
-                if (trim($rgx) === '.*') {
-                    unset($rgx);
-                }
-            }
-
-            if (!count($hostsRegExp)) {
-                return '.*';
-            }
-        }
-
-        return $hostsRegExp;
-    }
-
-    public static function checkUserAccess(mixed $app, string $serverName): bool
-    {
-        $hostsRegExp = self::getUserAccessHostsRegexp($app);
-
-        $hasAccess = false;
-        $hostsRegExp = is_array($hostsRegExp) ? $hostsRegExp : [$hostsRegExp];
-
-        foreach ($hostsRegExp as $regexp) {
-            if (preg_match("/$regexp/", $serverName)) {
-                $hasAccess = true;
-
-                break;
-            }
-        }
-
-        if (!$hasAccess) {
-            $app->abort(403, 'Access denied');
-        }
-
-        return $hasAccess;
-    }
-
     public static function parseRequestTags(array $request, $tagsFilter = null): array|bool
     {
         //request tags matches the tags' filter

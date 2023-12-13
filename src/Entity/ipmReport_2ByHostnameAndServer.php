@@ -2,11 +2,11 @@
 
 namespace App\Entity;
 
-use App\Repository\IpmReport2ByHostnameAndServerRepository;
+use App\Repository\ipmReport_2ByHostnameAndServerRepository;
 use Doctrine\ORM\Mapping as ORM;
 
-#[ORM\Entity(repositoryClass: IpmReport2ByHostnameAndServerRepository::class)]
-class IpmReport2ByHostnameAndServer
+#[ORM\Entity(repositoryClass: ipmReport_2ByHostnameAndServerRepository::class)]
+class ipmReport_2ByHostnameAndServer
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]

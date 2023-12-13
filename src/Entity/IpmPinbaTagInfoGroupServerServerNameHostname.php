@@ -2,11 +2,11 @@
 
 namespace App\Entity;
 
-use App\Repository\IpmPinbaTagInfoGroupServerNameHostNameRepository;
+use App\Repository\IpmPinbaTagInfoGroupServerServerNameHostnameRepository;
 use Doctrine\ORM\Mapping as ORM;
 
-#[ORM\Entity(repositoryClass: IpmPinbaTagInfoGroupServerNameHostNameRepository::class)]
-class IpmPinbaTagInfoGroupServerNameHostName
+#[ORM\Entity(repositoryClass: IpmPinbaTagInfoGroupServerServerNameHostnameRepository::class)]
+class IpmPinbaTagInfoGroupServerServerNameHostname
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -21,6 +21,9 @@ class IpmPinbaTagInfoGroupServerNameHostName
 
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $tag3Value = null;
+
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $tag4Value = null;
 
     #[ORM\Column(nullable: true)]
     private ?int $reqCount = null;
@@ -95,6 +98,18 @@ class IpmPinbaTagInfoGroupServerNameHostName
     public function setTag3Value(?string $tag3Value): static
     {
         $this->tag3Value = $tag3Value;
+
+        return $this;
+    }
+
+    public function getTag4Value(): ?string
+    {
+        return $this->tag4Value;
+    }
+
+    public function setTag4Value(?string $tag4Value): static
+    {
+        $this->tag4Value = $tag4Value;
 
         return $this;
     }

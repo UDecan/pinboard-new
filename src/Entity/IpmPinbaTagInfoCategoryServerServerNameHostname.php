@@ -2,11 +2,11 @@
 
 namespace App\Entity;
 
-use App\Repository\IpmPinbaTagInfoCategoryServerServerNameHostNameRepository;
+use App\Repository\IpmPinbaTagInfoCategoryServerServerNameHostnameRepository;
 use Doctrine\ORM\Mapping as ORM;
 
-#[ORM\Entity(repositoryClass: IpmPinbaTagInfoCategoryServerServerNameHostNameRepository::class)]
-class IpmPinbaTagInfoCategoryServerServerNameHostName
+#[ORM\Entity(repositoryClass: IpmPinbaTagInfoCategoryServerServerNameHostnameRepository::class)]
+class IpmPinbaTagInfoCategoryServerServerNameHostname
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
