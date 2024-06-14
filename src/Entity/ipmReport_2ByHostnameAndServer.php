@@ -56,7 +56,7 @@ class ipmReport_2ByHostnameAndServer
     private ?float $docSize100 = null;
 
     #[ORM\Column(length: 255, nullable: true)]
-    private ?string $createdAt = null;
+    private ?string $created_at = null;
 
     public function getId(): ?int
     {
@@ -233,12 +233,12 @@ class ipmReport_2ByHostnameAndServer
 
     public function getCreatedAt(): ?string
     {
-        return $this->createdAt;
+        return $this->created_at;
     }
 
-    public function setCreatedAt(string $createdAt): static
+    public function setCreatedAt(string $created_at): static
     {
-        $this->createdAt = $createdAt;
+        $this->created_at = $created_at;
 
         return $this;
     }

@@ -23,21 +23,27 @@ class IpmReportByServerNameRepository extends ServiceEntityRepository
 
     public function findAllServers()
     {
+
         return $this->createQueryBuilder('a')
+//            ->select("
+//                a.server_name,
+//                sum(a.req_count) as req_count,
+//                avg(a.req_per_sec) as req_per_sec,
+//                (
+//                    SELECT
+//                        count(b.server_name)
+//                    FROM
+//                        ipm_status_details b
+//
+//                )
+//                as error_count")
             ->select("
                 a.server_name,
                 sum(a.req_count) as req_count,
                 avg(a.req_per_sec) as req_per_sec,
-                (
-                    SELECT
-                        count(b.server_name)
-                    FROM
-                        ipm_status_details b
-
-                )
-                as error_count")
-//            ->andWhere('a.created_at > :created_at')
-//            ->setParameter('created_at', date('Y-m-d H:00:00', strtotime('-1 day')))
+                0 as error_count")
+            ->andWhere('a.created_at > :created_at')
+            ->setParameter('created_at', date('Y-m-d H:00:00', strtotime('-1 day')))
             ->groupBy('a.server_name')
             ->getQuery()
             ->getResult();
