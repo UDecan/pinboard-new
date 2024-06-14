@@ -19,6 +19,10 @@ final class Version20231102124315 extends AbstractMigration
 
     public function up(Schema $schema): void
     {
+//        $this->addSql("
+//              ....
+//            ) ENGINE=PINBA DEFAULT CHARSET=latin1 COMMENT='tagN_info:category,__server_name::90,95,99'
+//        ");
         $this->addSql("
             CREATE TABLE `ipm_pinba_tag_info_category_server_name` (
                     `tag1_value` varchar(64) DEFAULT NULL,
@@ -35,8 +39,13 @@ final class Version20231102124315 extends AbstractMigration
                     `p90` float DEFAULT NULL,
                     `p95` float DEFAULT NULL,
                     `p99` float DEFAULT NULL
-            ) ENGINE=PINBA DEFAULT CHARSET=latin1 COMMENT='tagN_info:category,__server_name::90,95,99'
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8
         ");
+//        $this->addSql("
+//            CREATE TABLE `ipm_pinba_tag_info_category_server_server_name` (
+//            ...
+//            ) ENGINE=PINBA DEFAULT CHARSET=latin1 COMMENT='tagN_info:category,server,__server_name::90,95,99'
+//        ");
         $this->addSql("
             CREATE TABLE `ipm_pinba_tag_info_category_server_server_name` (
                     `tag1_value` varchar(64) DEFAULT NULL,
@@ -54,8 +63,12 @@ final class Version20231102124315 extends AbstractMigration
                     `p90` float DEFAULT NULL,
                     `p95` float DEFAULT NULL,
                     `p99` float DEFAULT NULL
-            ) ENGINE=PINBA DEFAULT CHARSET=latin1 COMMENT='tagN_info:category,server,__server_name::90,95,99'
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8
         ");
+//        $this->addSql("
+//        ...
+//            ) ENGINE=PINBA DEFAULT CHARSET=latin1 COMMENT='tagN_info:category,__server_name,__hostname::90,95,99'
+//        ");
         $this->addSql("
             CREATE TABLE `ipm_pinba_tag_info_category_server_name_hostname` (
                     `tag1_value` varchar(64) DEFAULT NULL,
@@ -73,8 +86,12 @@ final class Version20231102124315 extends AbstractMigration
                     `p90` float DEFAULT NULL,
                     `p95` float DEFAULT NULL,
                     `p99` float DEFAULT NULL
-            ) ENGINE=PINBA DEFAULT CHARSET=latin1 COMMENT='tagN_info:category,__server_name,__hostname::90,95,99'
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8
         ");
+//        $this->addSql("
+        // ...
+//            ) ENGINE=PINBA DEFAULT CHARSET=latin1 COMMENT='tagN_info:category,server,__server_name,__hostname::90,95,99'
+//        ");
         $this->addSql("
             CREATE TABLE `ipm_pinba_tag_info_category_server_server_name_hostname` (
                     `tag1_value` varchar(64) DEFAULT NULL,
@@ -93,7 +110,7 @@ final class Version20231102124315 extends AbstractMigration
                     `p90` float DEFAULT NULL,
                     `p95` float DEFAULT NULL,
                     `p99` float DEFAULT NULL
-            ) ENGINE=PINBA DEFAULT CHARSET=latin1 COMMENT='tagN_info:category,server,__server_name,__hostname::90,95,99'
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8
         ");
     }
 

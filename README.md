@@ -13,3 +13,9 @@ Login: admin@admin.com
 Password: admin
 <br>
 http://127.0.0.1:888/
+
+# Cold-start
+
+1 - запустить миграцию
+2 - поменять движок бд с pinba на innodb
+

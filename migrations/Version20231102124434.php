@@ -19,6 +19,12 @@ final class Version20231102124434 extends AbstractMigration
 
     public function up(Schema $schema): void
     {
+//        $this->addSql("
+//            CREATE TABLE `ipm_pinba_report_by_hostname_and_server_90_95_99` (
+//                ...
+//            ) ENGINE=PINBA DEFAULT CHARSET=latin1 COMMENT='report6:::90,95,99';
+//        ");
+
         $this->addSql("
             CREATE TABLE `ipm_pinba_report_by_hostname_and_server_90_95_99` (
                     `req_count` int(11) DEFAULT NULL,
@@ -44,8 +50,15 @@ final class Version20231102124434 extends AbstractMigration
                     `p90` float DEFAULT NULL,
                     `p95` float DEFAULT NULL,
                     `p99` float DEFAULT NULL
-            ) ENGINE=PINBA DEFAULT CHARSET=latin1 COMMENT='report6:::90,95,99';
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8
         ");
+
+//        $this->addSql("
+//            CREATE TABLE `ipm_pinba_report_by_server_90_95_99` (
+//                ...
+//            ) ENGINE=PINBA DEFAULT CHARSET=latin1 COMMENT='report2:::90,95,99';
+//        ");
+
 
         $this->addSql("
             CREATE TABLE `ipm_pinba_report_by_server_90_95_99` (
@@ -71,8 +84,14 @@ final class Version20231102124434 extends AbstractMigration
                     `p90` float DEFAULT NULL,
                     `p95` float DEFAULT NULL,
                     `p99` float DEFAULT NULL
-            ) ENGINE=PINBA DEFAULT CHARSET=latin1 COMMENT='report2:::90,95,99';
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8
         ");
+
+//        $this->addSql("
+//            CREATE TABLE `ipm_pinba_report_by_hostname_90_95_99` (
+//                ...
+//            ) ENGINE=PINBA DEFAULT CHARSET=latin1 COMMENT='report3:::90,95,99';
+//        ");
 
         $this->addSql("
             CREATE TABLE `ipm_pinba_report_by_hostname_90_95_99` (
@@ -98,7 +117,7 @@ final class Version20231102124434 extends AbstractMigration
                     `p90` float DEFAULT NULL,
                     `p95` float DEFAULT NULL,
                     `p99` float DEFAULT NULL
-            ) ENGINE=PINBA DEFAULT CHARSET=latin1 COMMENT='report3:::90,95,99';
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8
         ");
 
         $this->addSql("ALTER TABLE `ipm_report_by_hostname` ADD p90 float DEFAULT NULL");
