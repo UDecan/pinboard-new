@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -11,11 +12,38 @@ class ServerController extends AbstractController
 {
     private const ROW_PER_PAGE = 50;
 
-//    private $rowPerPage = $app['params']['pagination']['row_per_page'] ?? $ROW_PER_PAGE;
-//    private $rowPerPage = $rowPerPage > 0 ? $rowPerPage : $ROW_PER_PAGE;
-//
+    private $rowPerPage;
+
 //    private $server = $app['controllers_factory'];
     private $allowedPeriods = ['1 day', '3 days', '1 week', '1 month'];
+
+    private EntityManagerInterface $entityManager;
+    function __construct(EntityManagerInterface $entityManager)
+    {
+        $this->entityManager = $entityManager;
+        $this->rowPerPage = $entityManager->params['pagination']['row_per_page'] ?? self::ROW_PER_PAGE;
+//                $conn = $this->getEntityManager()->getConnection();
+//
+//        $sql = '
+//            SELECT * FROM product p
+//            WHERE p.price > :price
+//            ORDER BY p.price ASC
+//            ';
+//
+//        $resultSet = $conn->executeQuery($sql, ['price' => $price]);
+//
+//        // returns an array of arrays (i.e. a raw data set)
+//        return $resultSet->fetchAllAssociative();
+
+
+//            $product = $entityManager->getRepository(Product::class)->find($id);
+//
+//            throw $this->createNotFoundException(
+//                'No product found for id '.$id
+//            );
+//
+//        return new Response('Check out this great product: '.$product->getName());
+    }
 
     #[Route('/{serverName}/{hostName}/overview.{format}', name: 'server', methods: ['GET'])]
     public function actionOverview(Request $request, $serverName, $hostName, $format)

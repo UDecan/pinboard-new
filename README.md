@@ -19,3 +19,11 @@ http://127.0.0.1:888/
 1 - запустить миграцию
 2 - поменять движок бд с pinba на innodb
 
+--------------
+composer install
+<br>
+npm install
+<br>
+php bin/console doctrine:migrations:execute --up DoctrineMigrations\\Version20231109083314
+<br>
+php bin/console doctrine:fixtures:load
