@@ -12,7 +12,7 @@ class Utils
         return dechex(rand(0, 10000000));
     }
 
-    public static function parseRequestTags(array $request, $tagsFilter = null): array|bool
+    public static function parseRequestTags(array $request, $tagsFilter = []): array|bool
     {
         //request tags matches the tags' filter
         if (count($tagsFilter)) {

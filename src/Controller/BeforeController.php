@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -10,6 +11,12 @@ use Pinboard\Utils\Utils;
 
 class BeforeController extends AbstractController
 {
+    private EntityManagerInterface $entityManager;
+    function __construct(EntityManagerInterface $entityManager)
+    {
+        $this->entityManager = $entityManager;
+    }
+
     // Не в том месте
     #[Route('/before', name: 'before')]
     public function actionBefore(): Response
@@ -22,13 +29,13 @@ class BeforeController extends AbstractController
             'created_at' => date('Y-m-d H:00:00', strtotime('-1 day'))
         ];
 
-        $hostsRegexp = Utils::getUserAccessHostsRegexp($app);
+//        $hostsRegexp = Utils::getUserAccessHostsRegexp($app);
         $hostsWhere = '';
 
-        if ($hostsRegexp !== '.*') {
-            $hostsRegexp = is_array($hostsRegexp) ? $hostsRegexp : [$hostsRegexp];
-            $hostsWhere = " AND (server_name REGEXP '" . implode("' OR server_name REGEXP '", $hostsRegexp) . "')";
-        }
+//        if ($hostsRegexp !== '.*') {
+//            $hostsRegexp = is_array($hostsRegexp) ? $hostsRegexp : [$hostsRegexp];
+//            $hostsWhere = " AND (server_name REGEXP '" . implode("' OR server_name REGEXP '", $hostsRegexp) . "')";
+//        }
 
         $sql = "
             SELECT
@@ -47,9 +54,10 @@ class BeforeController extends AbstractController
                 server_name
         ";
 
-        $stmt = $app['db']->executeCacheQuery($sql, $params, [], new QueryCacheProfile(60 * 60));
-        $list = $stmt->fetchAll();
-        $stmt->closeCursor();
+//        $stmt = $app['db']->executeCacheQuery($sql, $params, [], new QueryCacheProfile(60 * 60));
+//        $list = $stmt->fetchAll();
+        $list = $this->entityManager->getConnection()->executeQuery($sql, $params)->fetchAllAssociative();
+//        $stmt->closeCursor();
 
 
         $idn = new ToUnicode();
@@ -79,5 +87,8 @@ class BeforeController extends AbstractController
         }
 
         $app['menu'] = $result;
+//        Надо поправить, т.к. это заглушка
+        $this->menu = $result;
+        return new Response();
     }
 }

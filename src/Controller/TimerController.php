@@ -2,17 +2,32 @@
 
 namespace App\Controller;
 
+use Doctrine\ORM\EntityManagerInterface;
+use Pinboard\Utils\Utils;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
 class TimerController extends AbstractController
 {
+//    private $app['controllers_factory'];
+    private $requestTypes = ['live', 'req_time'];
+
+    private EntityManagerInterface $entityManager;
+    function __construct(EntityManagerInterface $entityManager)
+    {
+        $this->entityManager = $entityManager;
+    }
+
     #[Route('/{type}/{requestId}/{grouping}', name: 'timer', methods: ['GET'])]
     public function actionTimer($type, $requestId, $grouping): Response
     {
-        if (!in_array($type, $requestTypes)) {
-            $app->abort(404, "Type $type not allowed. Allowed types: " . implode(', ', $requestTypes));
+//        Для теста, потом нужно понять проблему, проблема в составленни url
+        $type = 'req_time';
+        $requestId = 1;
+
+        if (!in_array($type, $this->requestTypes)) {
+            throw $this->createNotFoundException("Type $type not allowed. Allowed types: " . implode(', ', $this->requestTypes));
         }
 
         $date = null;
@@ -20,17 +35,17 @@ class TimerController extends AbstractController
             list($requestId, $date) = explode('::', $requestId);
         }
 
-        $request = getRequestById($app['db'], $type, $requestId, $date);
+        $request = $this->getRequestById($this->entityManager, $type, $requestId, $date);
         if (!$request) {
-            $app->abort(404, "Request #$requestId not found.");
+            throw $this->createNotFoundException("Request #$requestId not found.");
         }
 
         $request['script_name'] = Utils::urlDecode($request['script_name']);
         $request = Utils::parseRequestTags($request);
 
-        $request['timers'] = getTimers($app['db'], $type, $requestId, $date);
+        $request['timers'] = $this->getTimers($this->entityManager, $type, $requestId, $date);
 
-        $groupingTags = findGroupingTags($request['timers']);
+        $groupingTags = $this->findGroupingTags($request['timers']);
 
         if (strlen($grouping)) {
             $grouping = preg_replace('/^grouping\-/', '', $grouping);
@@ -54,10 +69,10 @@ class TimerController extends AbstractController
         }
 
         if ($grouping) {
-            $request['timers'] = groupTimers($request['timers'], $grouping);
+            $request['timers'] = $this->groupTimers($request['timers'], $grouping);
         }
 
-        $request = formatRequestTimes($request);
+        $request = $this->formatRequestTimes($request);
 
         $result = [
             'request' => $request,
@@ -66,6 +81,8 @@ class TimerController extends AbstractController
             'grouping' => $grouping,
             'type' => $type,
             'request_id' => "$requestId::$date",
+//           Надо разобраться с этим base_url, сделать нормальную маршрутизацию
+            'base_url' => '/'
         ];
 
         return $this->render('timer.html.twig', $result);
@@ -92,17 +109,26 @@ class TimerController extends AbstractController
                 'date' => $date
             ];
 
+//            $sql = '
+//            SELECT
+//                *
+//            FROM
+//                ipm_req_time_details
+//            WHERE
+//                request_id = :id AND created_at = :date
+//        ';
             $sql = '
             SELECT
                 *
             FROM
                 ipm_req_time_details
             WHERE
-                request_id = :id AND created_at = :date
+                request_id = :id
         ';
         }
 
-        $data = $conn->fetchAll($sql, $params);
+//        $data = $conn->fetchAll($sql, $params);
+        $data = $conn->getConnection()->executeQuery($sql, $params)->fetchAllAssociative();
 
         if (count($data)) {
             return $data[0];
@@ -147,7 +173,8 @@ class TimerController extends AbstractController
         ';
         }
 
-        $data = $conn->fetchAll($sql, $params);
+//        $data = $conn->fetchAll($sql, $params);
+        $data = $conn->getConnection()->executeQuery($sql, $params)->fetchAllAssociative();
 
         if (!count($data)) {
             return [];
