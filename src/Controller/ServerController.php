@@ -3,6 +3,10 @@
 namespace App\Controller;
 
 use Doctrine\ORM\EntityManagerInterface;
+use Pinboard\Command\AggregateCommand;
+use Pinboard\Utils\SqlUtils;
+use Pinboard\Utils\Utils;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -22,31 +26,14 @@ class ServerController extends AbstractController
     {
         $this->entityManager = $entityManager;
         $this->rowPerPage = $entityManager->params['pagination']['row_per_page'] ?? self::ROW_PER_PAGE;
-//                $conn = $this->getEntityManager()->getConnection();
-//
-//        $sql = '
-//            SELECT * FROM product p
-//            WHERE p.price > :price
-//            ORDER BY p.price ASC
-//            ';
-//
-//        $resultSet = $conn->executeQuery($sql, ['price' => $price]);
-//
-//        // returns an array of arrays (i.e. a raw data set)
-//        return $resultSet->fetchAllAssociative();
 
-
-//            $product = $entityManager->getRepository(Product::class)->find($id);
-//
-//            throw $this->createNotFoundException(
-//                'No product found for id '.$id
-//            );
+//        $product = $entityManager->getRepository(Product::class)->find($id);
 //
 //        return new Response('Check out this great product: '.$product->getName());
     }
 
     #[Route('/{serverName}/{hostName}/overview.{format}', name: 'server', methods: ['GET'])]
-    public function actionOverview(Request $request, $serverName, $hostName, $format)
+    public function actionOverview(Request $request, $serverName, $hostName, $format): Response
     {
         $period = $request->get('period', '1 day');
         if (!in_array($period, $this->allowedPeriods)) {
@@ -54,10 +41,10 @@ class ServerController extends AbstractController
         }
 
         $result = [];
-        $result['hosts'] = getHosts($app['db'], $serverName);
-        $result['req'] = getRequestReview($app['db'], $serverName, $hostName, $period);
-        $result['req_per_sec'] = getRequestPerSecReview($app['db'], $serverName, $hostName, $period);
-        $result['statuses'] = getStatusesReview($app['db'], $serverName, $hostName, $period);
+        $result['hosts'] = $this->getHosts($this->entityManager, $serverName);
+        $result['req'] = $this->getRequestReview($this->entityManager, $serverName, $hostName, $period);
+        $result['req_per_sec'] = $this->getRequestPerSecReview($this->entityManager, $serverName, $hostName, $period);
+        $result['statuses'] = $this->getStatusesReview($this->entityManager, $serverName, $hostName, $period);
 
         if ($format === 'html') {
             $result['server_name'] = $serverName;
@@ -65,7 +52,10 @@ class ServerController extends AbstractController
             $result['period'] = $period;
             $result['periods'] = $this->allowedPeriods;
             $result['title'] = $serverName;
-            $result['req_time_border'] = number_format(getReqTimeBorder($app, $serverName) * 1000, 0, '.', '');
+            $result['req_time_border'] = number_format($this->getReqTimeBorder($this, $serverName) * 1000, 0, '.', '');
+
+//            Для теста
+            $result['base_url'] = '/';
 
             return $this->render('server.html.twig', $result);
         }
@@ -121,7 +111,7 @@ class ServerController extends AbstractController
         }
     }
 
-    #[Route('/{serverName}/{hostName}/timers', name: 'server', methods: ['GET'])]
+    #[Route('/{serverName}/{hostName}/timers', name: 'server_timers',  methods: ['GET'])]
     public function actionTimers(Request $request, $serverName, $hostName)
     {
         $period = $request->get('period', '1 day');
@@ -136,7 +126,7 @@ class ServerController extends AbstractController
         $serverFilter = $serverFilter === 'on';
 
         $result = [
-            'hosts' => getHosts($app['db'], $serverName),
+            'hosts' => $this->getHosts($this->entityManager, $serverName),
             'title' => $serverName,
             'periods' => $this->allowedPeriods,
             'period' => $period,
@@ -162,14 +152,14 @@ class ServerController extends AbstractController
                     'title' => 'Hit count',
                     'field' => 'hit_count',
                     'unit' => '',
-                    'data' => getTimersList($app['db'], $serverName, $hostName, 'hit_count', $period, $serverFilter),
+                    'data' => $this->getTimersList($this->entityManager, $serverName, $hostName, 'hit_count', $period, $serverFilter),
                 ],
                 'timer_value' => [
                     'title' => 'Timer value',
                     'subtitle' => 'total',
                     'field' => 'timer_value',
                     'unit' => ' s',
-                    'data' => getTimersList($app['db'], $serverName, $hostName, 'timer_value', $period, $serverFilter),
+                    'data' => $this->getTimersList($this->entityManager, $serverName, $hostName, 'timer_value', $period, $serverFilter),
                 ],
             ],
             'request_graphs' => [
@@ -185,10 +175,13 @@ class ServerController extends AbstractController
             ],
         ];
 
+        //            Для теста
+        $result['base_url'] = '/';
+
         return $this->render('timers.html.twig', $result);
     }
 
-    #[Route('/{serverName}/{hostName}/statuses/{pageNum}/{colOrder}/{colDir}', name: 'server', methods: ['GET'])]
+    #[Route('/{serverName}/{hostName}/statuses/{pageNum}/{colOrder}/{colDir}', name: 'server_statuses',  methods: ['GET'])]
     public function actionStatuses(Request $request, $serverName, $hostName, $pageNum, $colOrder, $colDir)
     {
         $pageNum = str_replace('page', '', $pageNum);
@@ -204,7 +197,7 @@ class ServerController extends AbstractController
 
         $result['rowPerPage'] = $this->rowPerPage;
 
-        $rowCount = getErrorPagesCount($app['db'], $serverName, $hostName);
+        $rowCount = $this->getErrorPagesCount($this->entityManager, $serverName, $hostName);
         $result['rowCount'] = $rowCount;
 
         $pageCount = ceil($rowCount / $this->rowPerPage);
@@ -212,18 +205,21 @@ class ServerController extends AbstractController
 
         if ((int)$pageCount !== 0) {
             if ($pageNum < 1 || $pageNum > $pageCount) {
-                $app->abort(404, "Page $pageNum does not exist.");
+                throw $this->createNotFoundException("Page $pageNum does not exist.");
             }
         }
 
         $startPos = ($pageNum - 1) * $this->rowPerPage;
-        $result['hosts'] = getHosts($app['db'], $serverName);
-        $result['statuses'] = getErrorPages($app['db'], $serverName, $hostName, $startPos, $this->rowPerPage, $colOrder, $colDir);
+        $result['hosts'] = $this->getHosts($this->entityManager, $serverName);
+        $result['statuses'] = $this->getErrorPages($this->entityManager, $serverName, $hostName, $startPos, $this->rowPerPage, $colOrder, $colDir);
+
+        //            Для теста
+        $result['base_url'] = '/';
 
         return $this->render('statuses.html.twig', $result);
     }
 
-    #[Route('/{serverName}/{hostName}/req-time/{pageNum}/{colOrder}/{colDir}', name: 'server', methods: ['GET'])]
+    #[Route('/{serverName}/{hostName}/req-time/{pageNum}/{colOrder}/{colDir}', name: 'server_req_time',  methods: ['GET'])]
     public function actionReqTime(Request $request, $serverName, $hostName, $pageNum, $colOrder, $colDir)
     {
         $pageNum = str_replace('page', '', $pageNum);
@@ -239,25 +235,28 @@ class ServerController extends AbstractController
 
         $result['rowPerPage'] = $this->rowPerPage;
 
-        $rowCount = getSlowPagesCount($app['db'], $serverName, $hostName);
+        $rowCount = $this->getSlowPagesCount($this->entityManager, $serverName, $hostName);
         $result['rowCount'] = $rowCount;
 
         $pageCount = ceil($rowCount / $this->rowPerPage);
         $result['pageCount'] = $pageCount;
         if ((int)$pageCount !== 0) {
             if ($pageNum < 1 || $pageNum > $pageCount) {
-                $app->abort(404, "Page $pageNum does not exist.");
+                throw $this->createNotFoundException("Page $pageNum does not exist.");
             }
         }
         $startPos = ($pageNum - 1) * $this->rowPerPage;
 
-        $result['hosts'] = getHosts($app['db'], $serverName);
-        $result['pages'] = getSlowPages($app['db'], $serverName, $hostName, $startPos, $this->rowPerPage, $colOrder, $colDir);
+        $result['hosts'] = $this->getHosts($this->entityManager, $serverName);
+        $result['pages'] = $this->getSlowPages($this->entityManager, $serverName, $hostName, $startPos, $this->rowPerPage, $colOrder, $colDir);
+
+        //            Для теста
+        $result['base_url'] = '/';
 
         return $this->render('req_time.html.twig', $result);
     }
 
-    #[Route('/{serverName}/{hostName}/mem-usage/{pageNum}/{colOrder}/{colDir}', name: 'server', methods: ['GET'])]
+    #[Route('/{serverName}/{hostName}/mem-usage/{pageNum}/{colOrder}/{colDir}', name: 'server_mem_usage',  methods: ['GET'])]
     public function actionMemUsage(Request $request, $serverName, $hostName, $pageNum, $colOrder, $colDir)
     {
         $pageNum = str_replace('page', '', $pageNum);
@@ -273,25 +272,28 @@ class ServerController extends AbstractController
 
         $result['rowPerPage'] = $this->rowPerPage;
 
-        $rowCount = getHeavyPagesCount($app['db'], $serverName, $hostName);
+        $rowCount = $this->getHeavyPagesCount($this->entityManager, $serverName, $hostName);
         $result['rowCount'] = $rowCount;
 
         $pageCount = ceil($rowCount / $this->rowPerPage);
         $result['pageCount'] = $pageCount;
         if ((int)$pageCount !== 0) {
             if ($pageNum < 1 || $pageNum > $pageCount) {
-                $app->abort(404, "Page $pageNum does not exist.");
+                throw $this->createNotFoundException("Page $pageNum does not exist.");
             }
         }
         $startPos = ($pageNum - 1) * $this->rowPerPage;
 
-        $result['hosts'] = getHosts($app['db'], $serverName);
-        $result['pages'] = getHeavyPages($app['db'], $serverName, $hostName, $startPos, $this->rowPerPage, $colOrder, $colDir);
+        $result['hosts'] = $this->getHosts($this->entityManager, $serverName);
+        $result['pages'] = $this->getHeavyPages($this->entityManager, $serverName, $hostName, $startPos, $this->rowPerPage, $colOrder, $colDir);
+
+        //            Для теста
+        $result['base_url'] = '/';
 
         return $this->render('mem_usage.html.twig', $result);
     }
 
-    #[Route('/{serverName}/{hostName}/cpu-usage/{pageNum}/{colOrder}/{colDir}', name: 'server', methods: ['GET'])]
+    #[Route('/{serverName}/{hostName}/cpu-usage/{pageNum}/{colOrder}/{colDir}', name: 'server_cpu_usage',  methods: ['GET'])]
     public function actionCpuUsage(Request $request, $serverName, $hostName, $pageNum, $colOrder, $colDir)
     {
         $pageNum = str_replace('page', '', $pageNum);
@@ -307,26 +309,29 @@ class ServerController extends AbstractController
 
         $result['rowPerPage'] = $this->rowPerPage;
 
-        $rowCount = getCPUPagesCount($app['db'], $serverName, $hostName);
+        $rowCount = $this->getCPUPagesCount($this->entityManager, $serverName, $hostName);
         $result['rowCount'] = $rowCount;
 
         $pageCount = ceil($rowCount / $this->rowPerPage);
         $result['pageCount'] = $pageCount;
         if ((int)$pageCount !== 0) {
             if ($pageNum < 1 || $pageNum > $pageCount) {
-                $app->abort(404, "Page $pageNum does not exist.");
+                throw $this->createNotFoundException("Page $pageNum does not exist.");
             }
         }
         $startPos = ($pageNum - 1) * $this->rowPerPage;
 
-        $result['hosts'] = getHosts($app['db'], $serverName);
-        $result['pages'] = getCPUPages($app['db'], $serverName, $hostName, $startPos, $this->rowPerPage, $colOrder, $colDir);
+        $result['hosts'] = $this->getHosts($this->entityManager, $serverName);
+        $result['pages'] = $this->getCPUPages($this->entityManager, $serverName, $hostName, $startPos, $this->rowPerPage, $colOrder, $colDir);
+
+        //            Для теста
+        $result['base_url'] = '/';
 
         return $this->render('cpu_usage.html.twig', $result);
     }
 
     // MATCH = GET|POST
-    #[Route('/{serverName}/{hostName}/live', name: 'server', methods: ['MATCH'])]
+    #[Route('/{serverName}/{hostName}/live', name: 'server_live', methods: ['MATCH'])]
     public function actionLive(Request $request, $serverName, $hostName)
     {
         // filter from session
@@ -371,13 +376,13 @@ class ServerController extends AbstractController
             }
         }
 
-        $result['pages'] = getLivePages($app['db'], $serverName, $hostName, $result['limit'], $liveFilter[$serverName]);
+        $result['pages'] = $this->getLivePages($app['db'], $serverName, $hostName, $result['limit'], $liveFilter[$serverName]);
 
         $ids = [];
         foreach ($result['pages'] as $item) {
             $ids[] = $item['id'];
         }
-        $addData = getTagsTimersForIds($app['db'], $ids);
+        $addData = $this->getTagsTimersForIds($app['db'], $ids);
 
         $tagsFilter = [];
         if (isset($liveFilter[$serverName]['tags'])) {
@@ -421,6 +426,9 @@ class ServerController extends AbstractController
 
             $response = new Response();
 
+            //            Для теста
+            $result['base_url'] = '/';
+
             $response->setContent($this->render('live.html.twig', $result));
 
             $response->headers->addCacheControlDirective('no-cache', true);
@@ -434,15 +442,16 @@ class ServerController extends AbstractController
     }
 
 
+    // Нужно переосмыслить метод полносьтю, пока для теста
     function getReqTimeBorder($app, $serverName)
     {
-        if (isset($app['params']['notification']['border']['req_time'][$serverName])) {
-            return $app['params']['notification']['border']['req_time'][$serverName];
-        }
-
-        if (isset($app['params']['notification']['border']['req_time']['global'])) {
-            return $app['params']['notification']['border']['req_time']['global'];
-        }
+//        if (isset($app['params']['notification']['border']['req_time'][$serverName])) {
+//            return $app['params']['notification']['border']['req_time'][$serverName];
+//        }
+//
+//        if (isset($app['params']['notification']['border']['req_time']['global'])) {
+//            return $app['params']['notification']['border']['req_time']['global'];
+//        }
 
         return AggregateCommand::DEFAULT_REQ_TIME_BORDER;
     }
@@ -460,12 +469,13 @@ class ServerController extends AbstractController
                 hostname
         ';
 
-        $stmt = $conn->executeQuery($sql, ['server_name' => $serverName]);
+//        $stmt = $conn->executeQuery($sql, ['server_name' => $serverName]);
+        $hosts = $conn->getConnection()->executeQuery($sql, ['server_name' => $serverName])->fetchAllAssociative();
 
-        $hosts = [];
-        while ($data = $stmt->fetch()) {
-            $hosts[] = $data['hostname'];
-        }
+//        $hosts = [];
+//        while ($data = $stmt->fetch()) {
+//            $hosts[] = $data['hostname'];
+//        }
 
         return $hosts;
     }
@@ -498,14 +508,15 @@ class ServerController extends AbstractController
                 created_at
         ';
 
-        $stmt = $conn->executeQuery($sql, $params);
+//        $stmt = $conn->executeQuery($sql, $params);
+        $stmt = $conn->getConnection()->executeQuery($sql, $params)->fetchAllAssociative();
 
         $statuses = [
             'data' => [],
             'codes' => []
         ];
 
-        while ($data = $stmt->fetch()) {
+        foreach ($stmt as $data) {
             $t = strtotime($data['created_at']);
             $date = date('Y,', $t) . (date('n', $t) - 1) . date(',d,H,i', $t);
 
@@ -554,7 +565,8 @@ class ServerController extends AbstractController
                 created_at
         ';
 
-        $data = $conn->fetchAll($sql, $params);
+//        $data = $conn->fetchAll($sql, $params);
+        $data = $conn->getConnection()->executeQuery($sql, $params)->fetchAllAssociative();
 
         $rpqData = [
             'data' => [],
@@ -659,7 +671,8 @@ class ServerController extends AbstractController
                 created_at
         ";
 
-        $data = $conn->fetchAll($sql, $params);
+//        $data = $conn->fetchAll($sql, $params);
+        $data = $conn->getConnection()->executeQuery($sql, $params)->fetchAllAssociative();
 
         foreach ($data as &$item) {
             $t = strtotime($item['created_at']);
@@ -734,7 +747,7 @@ class ServerController extends AbstractController
                     created_at ASC
             ";
 
-            $data = $conn->fetchAll($sql, $params);
+            $data = $conn->getConnection()->executeQuery($sql, $params)->fetchAllAssociative();
 
             foreach ($data as $item) {
                 $t = strtotime($item['created_at']);
@@ -762,9 +775,11 @@ class ServerController extends AbstractController
 
         $isServerFilter = $serverFilter ? 'server,' : '';
 
+        $aggregationAgg = $aggregation[$valueField]['agg'];
+
         $sql = "
             SELECT
-                category, $isServerFilter created_at, $aggregation[$valueField]['agg'] as $valueField
+                category, $isServerFilter created_at, $aggregationAgg as $valueField
             FROM
                 ipm_tag_info
             WHERE
@@ -779,7 +794,7 @@ class ServerController extends AbstractController
                 created_at ASC, $valueField DESC
         ";
 
-        $data = $conn->fetchAll($sql, $params);
+        $data = $conn->getConnection()->executeQuery($sql, $params)->fetchAllAssociative();
 
         foreach ($data as &$item) {
             $t = strtotime($item['created_at']);
@@ -834,7 +849,7 @@ class ServerController extends AbstractController
 
         $orderBy = 'created_at DESC';
         if ($colOrder !== null) {
-            $orderBy = generateOrderBy($colOrder, $colDir, 'ipm_status_details');
+            $orderBy = $this->generateOrderBy($colOrder, $colDir, 'ipm_status_details');
         }
 
         $sql = "
@@ -858,7 +873,7 @@ class ServerController extends AbstractController
                 $startPos, $rowCount
         ";
 
-        $data = $conn->fetchAll($sql, $params);
+        $data = $conn->getConnection()->executeQuery($sql, $params)->fetchAllAssociative();
 
         foreach ($data as &$item) {
             $item['script_name'] = Utils::urlDecode($item['script_name']);
@@ -892,7 +907,7 @@ class ServerController extends AbstractController
                 AND created_at > :created_at
         ";
 
-        $data = $conn->fetchAll($sql, $params);
+        $data = $conn->getConnection()->executeQuery($sql, $params)->fetchAllAssociative();
 
         return (int)$data[0]['COUNT(*)'];
     }
@@ -912,7 +927,7 @@ class ServerController extends AbstractController
 
         $orderBy = 'created_at DESC, req_time DESC';
         if ($colOrder !== null) {
-            $orderBy = generateOrderBy($colOrder, $colDir, 'ipm_req_time_details');
+            $orderBy = $this->generateOrderBy($colOrder, $colDir, 'ipm_req_time_details');
         }
 
         $sql = "
@@ -930,7 +945,7 @@ class ServerController extends AbstractController
                 $startPos, $rowCount
         ";
 
-        $data = $conn->fetchAll($sql, $params);
+        $data = $conn->getConnection()->executeQuery($sql, $params)->fetchAllAssociative();
 
         foreach ($data as &$item) {
             $item['script_name'] = Utils::urlDecode($item['script_name']);
@@ -965,7 +980,7 @@ class ServerController extends AbstractController
                 AND created_at > :created_at
         ";
 
-        $data = $conn->fetchAll($sql, $params);
+        $data = $conn->getConnection()->executeQuery($sql, $params)->fetchAllAssociative();
 
         return (int)$data[0]['cnt'];
     }
@@ -994,7 +1009,7 @@ class ServerController extends AbstractController
                 AND created_at > :created_at
         ";
 
-        $data = $conn->fetchAll($sql, $params);
+        $data = $conn->getConnection()->executeQuery($sql, $params)->fetchAllAssociative();
 
         return (int)$data[0]['cnt'];
     }
@@ -1014,7 +1029,7 @@ class ServerController extends AbstractController
 
         $orderBy = 'created_at DESC, cpu_peak_usage DESC';
         if (null !== $colOrder) {
-            $orderBy = generateOrderBy($colOrder, $colDir, 'ipm_cpu_usage_details');
+            $orderBy = $this->generateOrderBy($colOrder, $colDir, 'ipm_cpu_usage_details');
         }
 
         $sql = "
@@ -1032,7 +1047,7 @@ class ServerController extends AbstractController
                 $startPos, $rowCount
         ";
 
-        $data = $conn->fetchAll($sql, $params);
+        $data = $conn->getConnection()->executeQuery($sql, $params)->fetchAllAssociative();
 
         foreach ($data as &$item) {
             $item['script_name'] = Utils::urlDecode($item['script_name']);
@@ -1058,7 +1073,7 @@ class ServerController extends AbstractController
 
         $orderBy = 'created_at DESC, mem_peak_usage DESC';
         if ($colOrder !== null) {
-            $orderBy = generateOrderBy($colOrder, $colDir, 'ipm_mem_peak_usage_details');
+            $orderBy = $this->generateOrderBy($colOrder, $colDir, 'ipm_mem_peak_usage_details');
         }
 
         $sql = "
@@ -1082,7 +1097,7 @@ class ServerController extends AbstractController
                 $startPos, $rowCount
         ";
 
-        $data = $conn->fetchAll($sql, $params);
+        $data = $conn->getConnection()->executeQuery($sql, $params)->fetchAllAssociative();
 
         foreach ($data as &$item) {
             $item['script_name'] = Utils::urlDecode($item['script_name']);
@@ -1162,7 +1177,7 @@ class ServerController extends AbstractController
                 $limit
         ";
 
-        $data = $conn->fetchAll($sql, $params);
+        $data = $conn->getConnection()->executeQuery($sql, $params)->fetchAllAssociative();
 
         foreach ($data as $k => &$item) {
             if (!empty($filter['last_id']) && $filter['last_id'] > 0) {
@@ -1219,5 +1234,33 @@ class ServerController extends AbstractController
         }
 
         return $orderBy;
+    }
+
+    function getErrorPagesCount($conn, $serverName, $hostName) {
+        $params = [
+            'server_name' => $serverName,
+            'created_at'  => date('Y-m-d H:i:s', strtotime('-1 week')),
+        ];
+        $hostCondition = '';
+
+        if ($hostName != 'all') {
+            $params['hostname'] = $hostName;
+            $hostCondition = 'AND hostname = :hostname';
+        }
+
+        $sql = '
+        SELECT
+            COUNT(*)
+        FROM
+            ipm_status_details
+        WHERE
+            server_name = :server_name
+            ' . $hostCondition . '
+            AND created_at > :created_at
+    ';
+
+        $data = $conn->getConnection()->executeQuery($sql, $params)->fetchAllAssociative();
+
+        return (int)$data[0]['COUNT(*)'];
     }
 }

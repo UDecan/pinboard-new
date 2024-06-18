@@ -9,7 +9,8 @@
             <h2>
                 Request time
                 <small>
-                    <a href="{{ path('server_req_time', { serverName: server_name, hostName: hostname }) }}">
+                    <a href="{{ path('server_req_time', { serverName: server_name, hostName: hostname,
+                        pageNum: 1, colOrder: 1, colDir: 1}) }}">
                         view details
                     </a>
                 </small>
@@ -205,7 +206,9 @@
             <h2>
                 Memory peak usage
                 <small>
-                    <a href="{{ path('server_mem_usage', { serverName: server_name, hostName: hostname }) }}">
+                    {# Опять же pageNum и т.п. тут не должен быть, поправить #}
+                    <a href="{{ path('server_mem_usage', { serverName: server_name, hostName: hostname,
+                        pageNum: 1, colOrder: 1, colDir: 1}) }}">
                         view details
                     </a>
                 </small>
@@ -314,7 +317,8 @@
             <h2>
                 CPU peak usage
                 <small>
-                    <a href="{{ path('server_cpu_usage', { serverName: server_name, hostName: hostname }) }}">
+                    <a href="{{ path('server_cpu_usage', { serverName: server_name, hostName: hostname,
+                        pageNum: 1, colOrder: 1, colDir: 1}) }}">
                         view details
                     </a>
                 </small>
@@ -425,7 +429,8 @@
             <h2>
                 Error statuses
                 <small>
-                    <a href="{{ path('server_statuses', { serverName: server_name }) }}">
+                    <a href="{{ path('server_statuses', { serverName: server_name,
+                        hostName: server_name, pageNum: 1, colOrder: 1, colDir: 1}) }}">
                         view details
                     </a>
                 </small>

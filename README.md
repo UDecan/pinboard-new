@@ -27,3 +27,12 @@ npm install
 php bin/console doctrine:migrations:execute --up DoctrineMigrations\\Version20231109083314
 <br>
 php bin/console doctrine:fixtures:load
+
+В конфигах mysql docker надо будет убрать это свойство навсегда.
+```
+docker exec -ti mysql sh
+mysql -u root -p;
+SET GLOBAL sql_mode=(SELECT REPLACE(@@sql_mode,'ONLY_FULL_GROUP_BY',''));
+SET PERSIST sql_mode=(SELECT REPLACE(@@sql_mode,'ONLY_FULL_GROUP_BY',''));
+SET SESSION sql_mode=(SELECT REPLACE(@@sql_mode,'ONLY_FULL_GROUP_BY',''));
+```
