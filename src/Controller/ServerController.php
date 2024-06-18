@@ -28,7 +28,6 @@ class ServerController extends AbstractController
         $this->rowPerPage = $entityManager->params['pagination']['row_per_page'] ?? self::ROW_PER_PAGE;
 
 //        $product = $entityManager->getRepository(Product::class)->find($id);
-//
 //        return new Response('Check out this great product: '.$product->getName());
     }
 
