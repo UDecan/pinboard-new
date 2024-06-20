@@ -2,7 +2,6 @@
 
 {% block content %}
     <h1>Overview <small>for a last day</small></h1>
-    {% dump 'asd' %}
     {% if servers|length > 0 %}
         <table id="sortedTable" class="table table-bordered table-hover table-striped tablesorter">
             <thead>
@@ -25,7 +24,7 @@
                 <tr class="{{ server.error_count > 0 ? 'error' : '' }}">
                     <td>
                                         {#Разобраться, почему ругается на отсутствие hostName#}
-                        <a href="{{ path('server', { serverName: server.server_name, hostName: server.server_name }) }}"
+                        <a href="{{ path('server', { serverName: server.server_name, hostName: server.server_name, format: 'html' }) }}"
                            title="">
                             {{ server.server_name }}
                         </a>

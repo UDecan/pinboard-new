@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\IpmReportByServerName;
 use App\Repository\IpmReportByServerNameRepository;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bridge\Doctrine\ManagerRegistry;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -14,6 +15,14 @@ use Algo26\IdnaConvert\ToUnicode;
 
 class MainController extends AbstractController
 {
+    //    ------------Временно------------------------
+    private EntityManagerInterface $entityManager;
+    function __construct(EntityManagerInterface $entityManager)
+    {
+        $this->entityManager = $entityManager;
+    }
+//    --------------------------------------------
+
     #[Route('/', methods: ['GET'])]
     public function indexAction(IpmReportByServerNameRepository $ipmReportByServerNameRepository): Response
     {
@@ -41,6 +50,8 @@ class MainController extends AbstractController
 
         $result['total'] = $total;
         $result['base_url'] = '/';
+        // Временно нижняя строка, тест
+        $result['menu'] = (new BeforeController($this->entityManager))->actionBefore();
 
         return $this->render('index.html.twig', $result);
     }

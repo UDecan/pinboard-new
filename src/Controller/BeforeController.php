@@ -18,8 +18,9 @@ class BeforeController extends AbstractController
     }
 
     // Не в том месте
-    #[Route('/before', name: 'before')]
-    public function actionBefore(): Response
+//    #[Route('/before', name: 'before')]
+//    public function actionBefore(): Response
+    public function actionBefore()
     {
         $result = [
             'servers' => []
@@ -37,6 +38,24 @@ class BeforeController extends AbstractController
 //            $hostsWhere = " AND (server_name REGEXP '" . implode("' OR server_name REGEXP '", $hostsRegexp) . "')";
 //        }
 
+//        $sql = "
+//            SELECT
+//                server_name, count(created_at) cnt
+//            FROM
+//                ipm_report_by_server_name
+//            WHERE
+//                created_at >= :created_at AND
+//                server_name IS NOT NULL AND server_name != ''
+//                $hostsWhere
+//            GROUP BY
+//                server_name
+//            HAVING
+//                cnt > 10
+//            ORDER BY
+//                server_name
+//        ";
+
+        // Для теста убрал HAVING, т.к. нет такой большой выборки по данным
         $sql = "
             SELECT
                 server_name, count(created_at) cnt
@@ -48,17 +67,12 @@ class BeforeController extends AbstractController
                 $hostsWhere
             GROUP BY
                 server_name
-            HAVING
-                cnt > 10
             ORDER BY
                 server_name
         ";
 
-//        $stmt = $app['db']->executeCacheQuery($sql, $params, [], new QueryCacheProfile(60 * 60));
-//        $list = $stmt->fetchAll();
+        // Возможно надо сделать какое-то кеширование, чтобы не сильно долбить базу
         $list = $this->entityManager->getConnection()->executeQuery($sql, $params)->fetchAllAssociative();
-//        $stmt->closeCursor();
-
 
         $idn = new ToUnicode();
 
@@ -86,9 +100,9 @@ class BeforeController extends AbstractController
             $result['servers']['IPs'] = $ips;
         }
 
-        $app['menu'] = $result;
+//        $app['menu'] = $result;
 //        Надо поправить, т.к. это заглушка
         $this->menu = $result;
-        return new Response();
+        return $result;
     }
 }
