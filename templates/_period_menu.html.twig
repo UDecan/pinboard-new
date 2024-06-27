@@ -1,8 +1,8 @@
 <ul class="nav nav-pills small period">
     {% for label in periods %}
-        <li class="nav-item {{ period == label ? 'active' : '' }}">
+        <li class="nav-item">
                                                                     {# Опять же format тут не должен быть, поправить #}
-            <a class="nav-link active" href="{{ path('server', { serverName: server_name, hostName: hostname, period: label, format: 'html' }) }}">
+            <a class="nav-link {{ period == label ? 'active' : '' }}" href="{{ path('server', { serverName: server_name, hostName: hostname, period: label, format: 'html' }) }}">
                 {{ label }}
             </a>
         </li>

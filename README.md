@@ -24,7 +24,11 @@ composer install
 <br>
 npm install
 <br>
+npm i bootstrap-icons
+<br>
 php bin/console doctrine:migrations:execute --up DoctrineMigrations\\Version20231109083314
+<br>
+php bin/console doctrine:migrations:migrate
 <br>
 php bin/console doctrine:fixtures:load
 

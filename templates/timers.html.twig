@@ -4,14 +4,14 @@
 {% block content %}
     {% include '_server_menu.html.twig' with { title: title, server_name: server_name, hostname: hostname, hosts: hosts } %}
 
-    <ul class="nav nav-pills small period pull-right">
-        <li class="{{ server_filter ? '' :  'active' }}">
-            <a href="{{ path('server_timers', { serverName: server_name, hostName: hostname, period: period, server: 'off' }) }}">
+    <ul class="nav nav-pills small period float-end">
+        <li class="nav-item">
+            <a class="nav-link {{ server_filter ? '' :  'active' }}" href="{{ path('server_timers', { serverName: server_name, hostName: hostname, period: period, server: 'off' }) }}">
                 w/o server details
             </a>
         </li>
-        <li class="{{ server_filter ? 'active' : '' }}">
-            <a href="{{ path('server_timers', { serverName: server_name, hostName: hostname, period: period, server: 'on' }) }}">
+        <li class="nav-item">
+            <a class="nav-link {{ server_filter ? 'active' : '' }}" href="{{ path('server_timers', { serverName: server_name, hostName: hostname, period: period, server: 'on' }) }}">
                 with server details
             </a>
         </li>
@@ -21,7 +21,7 @@
     <div class="row">
         {% if charts|length > 0 %}
             {% for chart_key, chart in charts %}
-                <div class="span12">
+                <div class="col-12">
                     <h2>{{ chart.title }} {{ chart.subtitle is defined ? ('<small>(' ~ chart.subtitle ~ ')</small>')|raw : '' }}</h2>
                     {% if chart.data.timers|length > 0 %}
                         <div id="{{ chart.field }}-chart" style="height: 250px;"></div>
@@ -102,7 +102,7 @@
                 </div>
             {% endfor %}
         {% else %}
-            <div class="span12">
+            <div class="col-12">
                 <p class="text-center lead">No data for timers</p>
             </div>
         {% endif %}

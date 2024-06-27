@@ -4,7 +4,7 @@
 {% block content %}
     {% include '_server_menu.html.twig' with { title: title, server_name: server_name, hostname: hostname, hosts: hosts } %}
 
-    <ul class="nav nav-pills small period pull-right">
+    <ul class="nav nav-pills small period float-end">
         <li class="{{ server_filter ? '' :  'active' }}">
             <a href="{{ path('server_timers', { serverName: server_name, hostName: hostname, period: period, server: 'off' }) }}">
                 w/o server details

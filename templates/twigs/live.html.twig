@@ -4,7 +4,7 @@
 {% set frequency = 5 %}
 {% block content %}
     {% include '_server_menu.html.twig' with { title: title, server_name: server_name, hostname: hostname, hosts: hosts } %}
-    <div class="pull-right live-controls">
+    <div class="float-end live-controls">
         <a href="#" title="Play" class="icon-play disabled"></a>
         <a href="#" title="Pause" class="icon-pause"></a>
         <button class="btn btn-mini filter" type="button">Filter</button>
@@ -19,12 +19,12 @@
             <div class="controls">
                 <div class="input-prepend">
                     <span class="add-on"><i class="icon-tag"></i></span>
-                    <input name="tags" class="span4" type="text" value="{{ filter.tags is defined ? filter.tags : '' }}"
+                    <input name="tags" class="col-4" type="text" value="{{ filter.tags is defined ? filter.tags : '' }}"
                            placeholder="Tag value (tag_name=tag_value)">
                 </div>
                 <div class="input-prepend">
                     <span class="add-on"><i class="icon-time"></i></span>
-                    <input name="req_time" class="span4" type="text"
+                    <input name="req_time" class="col-4" type="text"
                            value="{{ filter.req_time is defined ? filter.req_time : '' }}"
                            placeholder="Min request time, ms">
                 </div>
@@ -34,7 +34,7 @@
         </form>
     </div>
     <div class="row">
-        <div class="span4">
+        <div class="col-4">
             <h3>Request time</h3>
             <div id="req-time-chart" style="height: 200px;"></div>
             <script type="text/javascript">
@@ -84,7 +84,7 @@
                 });
             </script>
         </div>
-        <div class="span4">
+        <div class="col-4">
             <h3>Memory peak usage</h3>
             <div id="mem-usage-chart" style="height: 200px;"></div>
             <script type="text/javascript">
@@ -133,7 +133,7 @@
                 });
             </script>
         </div>
-        <div class="span4">
+        <div class="col-4">
             <h3>CPU peak usage</h3>
             <div id="cpu-usage-chart" style="height: 200px;"></div>
             <script type="text/javascript">
@@ -184,7 +184,7 @@
         </div>
     </div>
     <div class="row">
-        <div class="span12">
+        <div class="col-12">
             <h3>Last requests</h3>
             <table id="table-data" class="table table-bordered table-hover table-striped">
                 <tr id="table-header">
